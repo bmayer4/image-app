@@ -6,7 +6,7 @@ module.exports = function validatePostInput(data) {
 
     data.text = !isEmpty(data.description) ? data.description : '';
     data.category = !isEmpty(data.category) ? data.category : '';
-    data.imagePath = !isEmpty(data.imagePath) ? data.imagePath : '';
+    data.image = !isEmpty(data.image) ? data.image : '';
 
     if (validator.isEmpty(data.description)) {
         errors.description = 'Description field is required';
@@ -16,8 +16,8 @@ module.exports = function validatePostInput(data) {
         errors.category = 'Category field is required';
     }
 
-    if (validator.isEmpty(data.imagePath)) {
-        errors.imagePath = 'image is required';
+    if (validator.isEmpty(data.image)) {  
+        errors.image = 'image is required';
     }
 
     return {

@@ -28,6 +28,20 @@ router.get('/:id', (req, res) => {
     .catch(err => res.status(404).json({ posterror: 'Unable to retrieve post' }));
 });
 
+// @route   GET api/posts/user/:userid
+// @desc    Get posts by user id
+// @access  Public
+router.get('/user/:userId', (req, res) => {
+    Post.find({ user: req.params.userId }).populate('user').then((posts) => {
+        if (!posts) {
+            return res.status(404).json({ postsnotfound: 'No posts found' });
+        }
+        res.json(posts);
+    })
+    .catch(err => res.status(404).json({ postserror: 'Unable to retrieve posts' }));;
+});
+
+
 // @route   POST api/posts/
 // @desc    Create posts
 // @access  Private
@@ -40,7 +54,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
 
     const { description, category } = req.body;
     const url = req.protocol + '://' + req.get('host');
-    console.log('url is', url);
+    //console.log('url is', url);  //http://localhost:5000 in development
     const newPost = new Post({
         description,
         category,
@@ -68,13 +82,14 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
 // @access  Private
 router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({storage: storage}).single('image'), (req, res) => {
     const { errors, isValid} = validatePostInput(req.body);
+    // const { errors, isValid} = validateUpatePostInput(req.body);  may have to create this if sending either image or imagePath
 
     if (!isValid) { 
         return res.status(400).json(errors);
     }
 
     const { description, category } = req.body;
-    let imagePath = req.body.imagePath;  //string if not updating image
+    let imagePath = req.body.imagePath;  //string if not updating image, may have to change validator
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
         imagePath = url + '/images/' + req.file.filename;
