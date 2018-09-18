@@ -46,7 +46,7 @@ router.get('/user/:userId', (req, res) => {
 // @desc    Create posts
 // @access  Private
 router.post('/', passport.authenticate('jwt', { session: false }), multer({storage: storage}).single('image'), (req, res) => {
-    const { errors, isValid} = validatePostInput(req.body);
+    const { errors, isValid} = validatePostInput(req.body, req.file);
 
     if (!isValid) { 
         return res.status(400).json(errors) 
@@ -54,7 +54,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
 
     const { description, category } = req.body;
     const url = req.protocol + '://' + req.get('host');
-    //console.log('url is', url);  //http://localhost:5000 in development
+
     const newPost = new Post({
         description,
         category,
@@ -64,6 +64,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
 
     newPost.save().then(post => res.json(post)).catch(e => res.json(e));
 });
+
 
 // @route   DELETE api/posts/:id
 // @desc    Delete post by id
@@ -81,15 +82,14 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
 // @desc    Update post by id
 // @access  Private
 router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({storage: storage}).single('image'), (req, res) => {
-    const { errors, isValid} = validatePostInput(req.body);
-    // const { errors, isValid} = validateUpatePostInput(req.body);  may have to create this if sending either image or imagePath
+    const { errors, isValid} = validatePostInput(req.body, req.file);
 
     if (!isValid) { 
         return res.status(400).json(errors);
     }
 
     const { description, category } = req.body;
-    let imagePath = req.body.imagePath;  //string if not updating image, may have to change validator
+    let imagePath = req.body.imagePath;  
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
         imagePath = url + '/images/' + req.file.filename;

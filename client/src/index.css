@@ -3,3 +3,94 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+/* Nav */
+.navbar-custom {
+  box-shadow: .5px .5px .5px rgba(0, 0, 0, .2);
+}  
+
+.navbar-custom .nav-item {
+  /* font-size: 1.2rem; */
+  padding-left: .5rem;
+}
+
+.navbar-custom button.navbar-toggler:focus { 
+  outline: 1px none;  /*removes blue outline from toggler */
+} 
+
+.brand-logo { 
+  color: rgba(0, 0, 0, .7);
+}
+
+/* Form Errors */
+.myForm .is-invalid {
+  border-color:#ced4da;
+}
+
+.myForm .is-invalid:focus {
+  border-color:#ced4da;
+  box-shadow: none;
+}
+
+/* Post card */
+.card h5 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #3a3c41;
+}
+
+.card img {
+  transform: scale(1);
+  transition: all .3s;
+}
+
+.card img:hover {
+  transform: scale(1.1);
+  opacity: .7;
+}
+
+.img-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.card-icons {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  /* margin: 0 auto;
+  left: 0;
+  right: 0; */
+}
+
+.card:hover .card-icons {
+  opacity: 1;
+  transition: all .4s;
+}
+
+.card-icons div {
+  padding: 0 14px;
+}
+
+@media (min-width: 768px) {
+  .card-icons div {
+      padding: 0 4px;
+  }
+}
+
+
+/* style filepicker */
+input[type="file"] {
+  visibility: hidden;
+}
+
+/* image preview */
+.imagePreview .img-fluid {
+  max-height: 120px;
+  border-radius: 5px;
+  margin-top: -10px;
+}

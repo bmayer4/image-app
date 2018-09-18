@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const keys = require('./config/keys');
 const passport = require('passport');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const users = require('./routes/api/users');
 const posts = require('./routes/api/posts');
@@ -30,6 +31,9 @@ app.get('/', (req, res) => {
 //use routes
 app.use('/api/users', users);
 app.use('/api/posts', posts);
+
+app.use('/images', express.static(path.join(__dirname, 'images')));  //any req targeting /images will be forwarded to backend/images and allowed to continue
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}!`);
