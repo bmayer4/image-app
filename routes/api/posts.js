@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const Post = require('../../models/Post');
 const validatePostInput = require('../../validation/post');
+const validateCommentInput = require('../../validation/comment');
 const multer = require('multer');
 const storage = require('../../middleware/multer-middleware');
 
@@ -11,15 +12,15 @@ const storage = require('../../middleware/multer-middleware');
 // @desc    Get all posts
 // @access  Public
 router.get('/', (req, res) => {
-    Post.find().sort({  date: -1 }).then(posts => res.json(posts))
+    Post.find().sort({ date: -1 }).populate('user',  ['firstName', 'lastName']).then(posts => res.json(posts))
     .catch(err => res.status(404).json());
 });
 
 // @route   GET api/posts/:id
-// @desc    Get post by id
+// @desc    Get individual post by id
 // @access  Public
 router.get('/:id', (req, res) => {
-    Post.findById(req.params.id).then(post => {
+    Post.findById(req.params.id).populate('user', ['firstName', 'lastName', 'date']).then(post => {
         if (!post) {
             return res.status(404).json({ postnotfound: 'No post found' });
         }
@@ -32,15 +33,11 @@ router.get('/:id', (req, res) => {
 // @desc    Get posts by user id
 // @access  Public
 router.get('/user/:userId', (req, res) => {
-    Post.find({ user: req.params.userId }).populate('user').then((posts) => {
-        if (!posts) {
-            return res.status(404).json({ postsnotfound: 'No posts found' });
-        }
+    Post.find({ user: req.params.userId }).populate('user', ['firstName', 'lastName', 'date']).then((posts) => {
         res.json(posts);
     })
     .catch(err => res.status(404).json({ postserror: 'Unable to retrieve posts' }));;
 });
-
 
 // @route   POST api/posts/
 // @desc    Create posts
@@ -116,7 +113,7 @@ router.post('/like/:id', passport.authenticate('jwt', { session: false }), (req,
                 //was liked, so unlike
                 post.likes = updatedLikes;
                 post.save().then(post => res.json(post))
-                .catch(err => res.status(400).json({ likeerror: 'Unable to unlike post' }));
+                .catch(err => res.status(400).json({ unlikeerror: 'Unable to unlike post' }));
             } else {
                    //was never liked, so like
                    post.likes.unshift({ user: req.user.id });
@@ -132,19 +129,21 @@ router.post('/like/:id', passport.authenticate('jwt', { session: false }), (req,
 // @desc    Add comment to post
 // @access  Private
 router.post('/comment/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const { errors, isValid} = validatePostInput(req.body);
+    const { errors, isValid} = validateCommentInput(req.body);
 
     if (!isValid) { 
         return res.status(400).json(errors) 
     }
 
-    Post.findById(req.params.id).then(post => {
+    Post.findById(req.params.id).populate('user').then(post => {
         if (!post) {
             return res.status(404).json({ postnotfound: 'No post found' });
         }
 
         const newComment = {
             text: req.body.text,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             user: req.user.id
         };
 
@@ -158,7 +157,7 @@ router.post('/comment/:id', passport.authenticate('jwt', { session: false }), (r
 // @access  Private
 router.delete('/comment/:id/:comment_id', passport.authenticate('jwt', { session: false }), (req, res) => {
 
-    Post.findById(req.params.id).then(post => {
+    Post.findById(req.params.id).populate('user').then(post => {
         if (!post) {
             return res.status(404).json({ postnotfound: 'No post found' });
         }

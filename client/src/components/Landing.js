@@ -1,11 +1,15 @@
 
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 const Landing = () => {
   return (
-    <div className="text-center landing-header">
-      <div className="display-4">Welcome to Image App</div>
-      <h5>Your image community awaits you</h5>
+    <div className='main-header'>
+    <div className="header-overlay text-center text-white">
+        <div className="display-3 header-content header-content-title">Imagely</div>
+        <p className="header-content header-paragraph">Your image community awaits you</p>
+        <Link to='/explore'><div className="header-button btn btn-outline-light">Explore</div></Link>
+    </div>
     </div>
   )
 }

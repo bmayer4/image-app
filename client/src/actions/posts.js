@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING } from './types';
+import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS } from './types';
 
 /* thunks */
-export const startAddPost = (postData) => dispatch => {
+export const startAddPost = (postData, history) => dispatch => {
     dispatch(clearErrors());
     axios.post('/api/posts', postData).then(res => {
-        dispatch(addPost(res.data));
+        //dispatch(addPost(res.data));  //post we add from create isn't populating user info
+        history.push('/explore');
     }).catch(err => {
         dispatch(getErrors(err.response.data)); 
     })
@@ -29,6 +30,15 @@ export const startGetPost = (id) => dispatch => {
     })
 }
 
+export const startGetUserPosts = (userId) => dispatch => {
+    dispatch(setPostLoading());
+    axios.get(`/api/posts/user/${userId}`).then(res => {
+        dispatch(getUserPosts(res.data));  //no posts from api wouldn't return error
+    }).catch(err => {
+        dispatch(getUserPosts(null));
+    })
+}
+
 export const startDeletePost = (id) => dispatch => {
     dispatch(clearErrors());
     axios.delete(`/api/posts/${id}`).then(res => {
@@ -47,30 +57,31 @@ export const startUpdatePost = (id, history) => dispatch => {
     })   
 }
 
-// export const startToggleLikePost = (id) => dispatch => {
-//     axios.post(`/api/posts/like/${id}`).then(res => {
-//         dispatch(startGetPosts());  //may want reducer for this
-//     }).catch(err => {
-//         dispatch(getErrors(err.response.data)); 
-//     })
-// }
+export const startToggleLikePost = (id) => dispatch => {
+    axios.post(`/api/posts/like/${id}`).then(res => {
+        dispatch(startGetPosts());  //may want reducer for this
+        console.log('liked');
+    }).catch(err => {
+       dispatch(getErrors(err.response.data)); 
+    })
+}
 
-// export const startAddComment = (postId, commentData) => dispatch => {
-//     dispatch(clearErrors());
-//     axios.post(`/api/posts/comment/${postId}`, commentData).then(res => {
-//         dispatch(getPost(res.data));
-//     }).catch(err => {
-//         dispatch(getErrors(err.response.data)); 
-//     })
-// }
+export const startAddComment = (postId, commentData) => dispatch => {
+    dispatch(clearErrors());
+    axios.post(`/api/posts/comment/${postId}`, commentData).then(res => {
+        dispatch(getPost(res.data));   //? 
+    }).catch(err => {
+        dispatch(getErrors(err.response.data)); 
+    })
+}
 
-// export const startDeleteComment = (postId, commentId) => dispatch => {
-//     axios.delete(`/api/posts/comment/${postId}/${commentId}`).then(res => {
-//         dispatch(getPost(res.data));
-//     }).catch(err => {
-//         dispatch(getErrors(err.response.data)); 
-//     })
-// }
+export const startDeleteComment = (postId, commentId) => dispatch => {
+    axios.delete(`/api/posts/comment/${postId}/${commentId}`).then(res => {
+        dispatch(getPost(res.data));   //?
+    }).catch(err => {
+        dispatch(getErrors(err.response.data)); 
+    })
+}
 
 
 /* action creators */
@@ -93,6 +104,11 @@ export const deletePost = (id) => ({
     type: DELETE_POST,
     payload: id
 });
+
+export const getUserPosts = (posts) =>({
+    type: GET_USER_POSTS,
+    payload: posts
+})
 
 export const setPostLoading = () => ({
     type: POST_LOADING

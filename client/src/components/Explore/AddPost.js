@@ -15,21 +15,18 @@ class AddPost extends Component {
         description: '',
         category: '',
         imagePreview: '',
-        image: {},
+        image: null,
         errors: {}
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //   if (nextProps.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
+    componentWillReceiveProps(nextProps) {
 
-    //   if (nextProps.errors) {
-    //     this.setState({
-    //       errors: nextProps.errors
-    //     })
-    //   }
-    // }
+      // if (nextProps.errors) {
+      //   this.setState({
+      //     errors: nextProps.errors
+      //   })
+      // }
+  }
 
     // componentDidMount() {
     //   if (this.props.auth.isAuthenticated) {
@@ -51,7 +48,9 @@ class AddPost extends Component {
         postData.append('description', this.state.description);
         postData.append('image', this.state.image);
 
-        this.props.startAddPost(postData);
+        const { history } = this.props;
+
+        this.props.startAddPost(postData, history);
     }
 
     showFileUpload = () => {
@@ -65,12 +64,21 @@ class AddPost extends Component {
         });
 
         const reader = new FileReader();  
+       
         reader.onload = () => {           //called when its done loading the file
           this.setState({
             imagePreview: reader.result
         });
         };
-        reader.readAsDataURL(file);      
+      
+
+        if (file) {
+          reader.readAsDataURL(file); 
+        } else {
+          this.setState({
+            imagePreview: ''
+        });
+        }    
     }  
 
   render() {
@@ -120,6 +128,7 @@ class AddPost extends Component {
             </div>
           </div>
         </div>
+        <div className='addMarginToTop'></div>
       </div>
     )
   }
@@ -139,7 +148,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  startAddPost: (postData) => dispatch(startAddPost(postData))
+  startAddPost: (postData, history) => dispatch(startAddPost(postData, history))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddPost);

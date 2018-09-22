@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 const Header = () => {
   return (
     <div>
-    <nav className="navbar navbar-expand-md navbar-light py-4 navbar-custom">
+    <nav className="navbar navbar-expand-md navbar-light py-3 navbar-custom">
     <div className="container">
     <Link to='/'>
         <div className="navbar-brand">
-            <div className="brand-logo d-inline">Image App</div>
+            <div className="brand-logo d-inline">Imagely</div>
         </div>
     </Link>
         <button className='navbar-toggler' data-toggle='collapse' data-target='#navbarCollapse'>

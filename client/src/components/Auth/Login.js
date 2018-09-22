@@ -12,17 +12,17 @@ class Login extends Component {
         errors: {}
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //   if (nextProps.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.auth.isAuthenticated) {
+        this.props.history.push('/explore');
+      }
 
     //   if (nextProps.errors) {
     //     this.setState({
     //       errors: nextProps.errors
     //     })
     //   }
-    // }
+    }
 
     // componentDidMount() {
     //   if (this.props.auth.isAuthenticated) {
@@ -42,7 +42,6 @@ class Login extends Component {
             email: this.state.email,
             password: this.state.password
         }
-        console.log('submitted');
         this.props.loginUser(user);
     }
 
@@ -74,6 +73,7 @@ class Login extends Component {
             </div>
           </div>
         </div>
+        <div className='addMarginToTop'></div>
       </div>
     )
   }

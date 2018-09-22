@@ -88,6 +88,7 @@ class Join extends Component {
             </div>
           </div>
         </div>
+        <div className='addMarginToTop'></div>
       </div>
     )
   }

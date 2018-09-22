@@ -86,4 +86,18 @@ router.get('/current', passport.authenticate('jwt', { session: false}), (req, re
     });
 })
 
+// @route   GET api/users/:userid
+// @desc    Get user by user id
+// @access  Public
+router.get('/:userId', (req, res) => {
+    User.findById(req.params.userId, ['firstName', 'lastName', 'date']).then((user) => {
+        if (!user) {
+            return res.status(400).json({ usererror: 'Unable to retrieve user' })
+        }
+        res.json(user);
+    })
+    .catch(err => res.status(404).json({ usererror: 'Unable to retrieve user' }));;
+});
+
+
 module.exports = router; 

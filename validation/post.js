@@ -13,6 +13,10 @@ module.exports = function validatePostInput(data, fileData) {
         data.image = !isEmpty( data.image) ?  data.image : '';
     }
 
+    if (!Validator.isLength(data.description, { max: 80 })) {
+        errors.description = 'Description can not be more than 80 characters';
+    }
+
     if (validator.isEmpty(data.description)) {
         errors.description = 'Description field is required';
     }

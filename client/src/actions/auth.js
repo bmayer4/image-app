@@ -8,7 +8,7 @@ import jwt_decode from 'jwt-decode';
 export const registerUser = (userData, history) => dispatch => {
     dispatch(clearErrors());
     axios.post('/api/users/register', userData).then(res => {
-        history.push('/login')
+        history.push('/login');
     })
     .catch(err => dispatch(getErrors(err.response.data)));
 };

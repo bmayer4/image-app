@@ -1,10 +1,11 @@
-import { ADD_POST, POST_LOADING, GET_POSTS, GET_POST, DELETE_POST } from '../actions/types';
+import { ADD_POST, POST_LOADING, GET_POSTS, GET_POST, DELETE_POST, GET_USER_POSTS } from '../actions/types';
 
 const initialState = {
     posts: [],
     post:  {},
-    categories: ['Sports', 'Outdoors', 'Cooking', 'Fashion', 'Holidays', 'Travel', 'Entertainment', 'Friends', 'Selfie', 'Love', 'Animals', 'Business', 'Home'],
-    loading: false
+    userPosts: [],
+    categories: ['', 'Sports', 'Outdoors', 'Cooking', 'Fashion', 'Holidays', 'Travel', 'Entertainment', 'Friends', 'Selfie', 'Love', 'Animals', 'Business', 'Home'],
+    loading: false 
 }
 
 const postReducer = (state = initialState, action) => {
@@ -26,6 +27,12 @@ const postReducer = (state = initialState, action) => {
                 post: action.payload,
                 loading: false
             }
+        case GET_USER_POSTS: 
+        return {
+            ...state,
+            userPosts: action.payload,
+            loading: false
+        }
         case DELETE_POST:
             return {
                 ...state,

@@ -10,6 +10,8 @@ import Join from './components/Auth/Join';
 import Landing from './components/Landing';
 import Login from './components/Auth/Login';
 import NotFound from './components/NotFound';
+import PostPage from './components/Post/PostPage';
+import UserPage from './components/User/UserPage';
 
 
 class App extends Component {
@@ -19,17 +21,17 @@ class App extends Component {
       <BrowserRouter>
       <div>
       <Header />
-      <div className="container">
       <Switch>
       <Route path="/" component={Landing} exact />
       <Route path="/explore" component={Explore} />
+      <Route path="/posts/:id" component={PostPage} />
       <Route path="/post/add" component={AddPost} />
       <Route path="/edit/:id" component={EditPost} />
       <Route path="/login" component={Login} />
       <Route path="/join" component={Join} />
+      <Route path="/user/:id" component={UserPage} />
       <Route component={NotFound} />
       </Switch>
-      </div>
       </div>
       </BrowserRouter>
       </div>

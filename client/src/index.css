@@ -1,7 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Open Sans', sans-serif;
+  overflow-y: overlay
 }
 
 /* Nav */
@@ -20,6 +21,7 @@ body {
 
 .brand-logo { 
   color: rgba(0, 0, 0, .7);
+  font-size: 1.6rem;
 }
 
 /* Form Errors */
@@ -30,56 +32,6 @@ body {
 .myForm .is-invalid:focus {
   border-color:#ced4da;
   box-shadow: none;
-}
-
-/* Post card */
-.card h5 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #3a3c41;
-}
-
-.card img {
-  transform: scale(1);
-  transition: all .3s;
-}
-
-.card img:hover {
-  transform: scale(1.1);
-  opacity: .7;
-}
-
-.img-container {
-  overflow: hidden;
-  position: relative;
-}
-
-.card-icons {
-  position: absolute;
-  display: flex;
-  justify-content: space-around;
-  top: 70%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  /* margin: 0 auto;
-  left: 0;
-  right: 0; */
-}
-
-.card:hover .card-icons {
-  opacity: 1;
-  transition: all .4s;
-}
-
-.card-icons div {
-  padding: 0 14px;
-}
-
-@media (min-width: 768px) {
-  .card-icons div {
-      padding: 0 4px;
-  }
 }
 
 
@@ -93,4 +45,108 @@ input[type="file"] {
   max-height: 120px;
   border-radius: 5px;
   margin-top: -10px;
+}
+
+/* no link style */
+a { color: inherit; } 
+
+/*  landing page header */
+.main-header {
+  height: 600px;
+  position: relative;
+  background-image: url('../src/images/mountains.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background:rgba(0, 0, 0, .48);
+}
+
+.header-button {
+  animation: moveIn 2s ease-out;
+}
+
+.header-content-title {
+  padding-top: 150px;
+  animation: moveInLeft 1.5s ease-out;
+}
+
+.header-paragraph {
+  animation: moveInRight 1.5s ease-out;
+  font-size: 1.4rem;
+}
+
+@media (max-width: 768px) {
+
+  .header-content-title {
+      font-size: 3.2rem;
+      margin-bottom: .6rem;
+  }
+  
+  .header-paragraph {
+      font-size: 1rem;
+  }
+
+}
+
+/* Comment card*/
+.myCard {
+  padding: .8rem;
+}
+
+/* Comment form */
+.myCommentButton {
+  margin-top: -.5rem;
+}
+
+/* add space at bottom */
+.addMarginToTop {
+  margin-top: 5rem;
+}
+
+/* restrict height of images */
+.myImage {
+  max-height: 800px;
+}
+
+/* link hover */
+a:hover {
+  color: rgba(0, 0, 0, .4);
+  text-decoration: none;
+}
+
+/* animations */
+@keyframes moveInLeft {
+  0% {
+      opacity: 0;
+      transform: translateX(-5rem);
+  }
+
+  100% {
+      opacity: 1;
+      transform: translate(0);
+  }
+}
+
+@keyframes moveInRight {
+  0% {
+      opacity: 0;
+      transform: translateX(5rem);
+  }
+
+  100% {
+      opacity: 1;
+      transform: translate(0);
+  }
+}
+
+@keyframes moveIn {
+  0% { opacity: 0; } 100% { opacity: 1; }
 }

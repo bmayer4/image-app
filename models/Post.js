@@ -9,7 +9,8 @@ const PostSchema = new Schema({
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 80
     },
     category: {
         type: String,
@@ -34,6 +35,15 @@ const PostSchema = new Schema({
                 ref: 'users'
             },
             text: {
+                type: String,
+                required: true,
+                maxlength: 300
+            },
+            firstName: {
+                type: String,
+                required: true
+            },
+            lastName: {
                 type: String,
                 required: true
             },
