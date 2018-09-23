@@ -2,21 +2,35 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { startGetPosts, startToggleLikePost } from '../../actions/posts';
+import { startGetPosts, startToggleLikePost, resetPosts, startGetMorePosts } from '../../actions/posts';
+import { clearFilters } from '../../actions/filters';
 import PostItem from './PostItem';
+import PostFilters from '../Filters/PostFilters';
+
 
 class Explore extends Component {
 
 componentDidMount() {
-    this.props.startGetPosts(); 
+    const { filters } = this.props;
+    this.props.startGetPosts(filters.category, 0, filters.limit); 
+}
+
+componentWillUnmount() {
+  this.props.resetPosts();
+  this.props.clearFilters();
 }
 
 onToggleLike = (id) => {
   this.props.startToggleLikePost(id);
 }
 
+loadMore = () => {
+  const { filters, post } = this.props;
+  this.props.startGetMorePosts(filters.category, post.posts.length, filters.limit);
+}
+
   render() {
-    let { auth } = this.props;
+    let { auth, filters } = this.props;
     let { posts, loading } = this.props.post;
     let postContent;
     if (loading) {
@@ -24,35 +38,49 @@ onToggleLike = (id) => {
     } else if (posts && posts.length) {
         postContent = posts.map((p, i) => <PostItem key={i} post={p} toggleLike={this.onToggleLike} auth={auth} />)
     } else {
-        postContent = <h1>No posts yet</h1>
+        postContent = <h4 className='mt-5 ml-3'>No posts yet</h4>
     }
+
+    let postsLength = this.props.post.posts.length;
+    let button = (postsLength & postsLength !== filters.count) && (postsLength && postsLength % filters.limit === 0) ?
+                 <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
     return (
             <div className='container mt-3'>
+            <PostFilters getPosts={this.props.startGetPosts} />
             <div className='row'>
             { postContent }
             </div>
+            { button }
             <div className='addMarginToTop'></div>
-      </div>
+           </div>
     )
   }
 }
 
-Explore.propTypes = {
+Explore.propTypes = { 
     post: PropTypes.object.isRequired,
     startGetPosts: PropTypes.func.isRequired,
+    startGetMorePosts: PropTypes.func.isRequired,
     startToggleLikePost: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
+    clearFilters: PropTypes.func.isRequired,
+    resetPosts: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    filters: PropTypes.object.isRequired
   }
   
   const mapStateToProps = (state) => ({
     post: state.post,
-    auth: state.auth
+    auth: state.auth,
+    filters: state.filters
   })
   
   const mapDispatchToProps = (dispatch) => ({
-    startGetPosts: (posts) => dispatch(startGetPosts(posts)),
-    startToggleLikePost: (id) => dispatch(startToggleLikePost(id))
+    startGetPosts: (cat, skip, limit) => dispatch(startGetPosts(cat, skip, limit)),
+    startGetMorePosts: (cat, skip, limit) => dispatch(startGetMorePosts(cat, skip, limit)),
+    startToggleLikePost: (id) => dispatch(startToggleLikePost(id)),
+    clearFilters: () => dispatch(clearFilters()),
+    resetPosts: () => dispatch(resetPosts())
   })
   
   export default connect(mapStateToProps, mapDispatchToProps)(Explore);

@@ -57,6 +57,11 @@ input[type="file"] {
 /* no link style */
 a { color: inherit; } 
 
+/* filters dropdown */
+.catSort {
+  font-size: .92rem; 
+}
+
 /*  landing page header */
 .main-header {
   height: 600px;

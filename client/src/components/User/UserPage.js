@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { startGetUserPosts } from '../../actions/posts';
-import { startGetUser } from '../../actions/user';
+import { startGetUser, clearUser } from '../../actions/user';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
 
@@ -12,7 +12,10 @@ class UserPage extends Component {
     const userId = this.props.match.params.id;
     this.props.startGetUserPosts(userId);
     this.props.startGetUser(userId);
+  }
 
+  componentWillUnmount() {
+    this.props.clearUser();
   }
 
   componentWillReceiveProps(nextProps) {   //method being removed by react?
@@ -58,6 +61,7 @@ class UserPage extends Component {
 
 UserPage.propTypes = {
   startGetUserPosts: PropTypes.func.isRequired,
+  clearUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   post: PropTypes.object.isRequired,
@@ -76,7 +80,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   startGetUserPosts: (userId) => dispatch( startGetUserPosts(userId)),
   startGetUser: (userId) => dispatch(startGetUser(userId)),
-  getUser: (userId) => dispatch(startGetUser(userId))
+  getUser: (userId) => dispatch(startGetUser(userId)),
+  clearUser: () => dispatch(clearUser())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

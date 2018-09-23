@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_USER, GET_ERRORS, CLEAR_ERRORS } from './types';
+import { GET_USER, GET_ERRORS, CLEAR_ERRORS, CLEAR_USER } from './types';
 
 
 /* thunks */
@@ -12,10 +12,14 @@ export const startGetUser = (userId) => dispatch => {
 }
 
 /* action creators */
-const getUser = (user) => ({
+export const getUser = (user) => ({
     type: GET_USER,
     payload: user
 });
+
+export const clearUser = () => ({
+    type: CLEAR_USER
+})
 
 export const getErrors = (errors) => ({
     type: GET_ERRORS,

@@ -8,12 +8,27 @@ const multer = require('multer');
 const storage = require('../../middleware/multer-middleware');
 
 
-// @route   GET api/posts/
+// @route   GET api/posts/?queryParams (optional)
 // @desc    Get all posts
 // @access  Public
 router.get('/', (req, res) => {
-    Post.find().sort({ date: -1 }).populate('user',  ['firstName', 'lastName']).then(posts => res.json(posts))
-    .catch(err => res.status(404).json());
+    let fetchedPosts;
+    let skip = +req.query.skip;
+    let limit = +req.query.limit;
+    let category = req.query.category;
+    let postQuery = category ? Post.find({ category: category.toLowerCase() }) : Post.find();
+    if (skip !== null && limit !== null) {  //0 limit is equivalent to no limit per mongo docs
+        postQuery.skip(skip).limit(limit);
+    }
+    postQuery.sort({ date: -1 }).populate('user',  ['firstName', 'lastName']).then(posts => {
+        fetchedPosts = posts;
+        return Post.countDocuments();  //countDocuments returns a promise
+        }).then(count => {
+            res.json({
+                posts: fetchedPosts,
+                count
+            })
+        }).catch(err => res.status(404).json());
 });
 
 // @route   GET api/posts/:id
@@ -54,7 +69,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
 
     const newPost = new Post({
         description,
-        category,
+        category: category.ToLowerCase(),
         user: req.user.id,
         imagePath: url + '/images/' + req.file.filename
     });

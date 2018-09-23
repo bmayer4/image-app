@@ -107,7 +107,7 @@ class AddPost extends Component {
                 <div className="invalid-feedback">{errors.description}</div>
                 </div>
                 <div className="form-group">
-                <label htmlFor="password">Category</label>
+                <label>Category</label>
                 <select className='form-control' name='category' value={category} onChange={this.onChange}>
                     {selectOptions}
                 </select>
