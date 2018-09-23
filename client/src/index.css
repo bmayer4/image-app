@@ -11,8 +11,15 @@ body {
 }  
 
 .navbar-custom .nav-item {
-  /* font-size: 1.2rem; */
   padding-left: .5rem;
+}
+
+.navbar-custom .navbar-nav .nav-link {
+  color: rgba(0, 0, 0, .55);
+}
+
+.navbar-custom .navbar-nav .nav-link:hover {
+  color: rgba(0, 0, 0, .85);
 }
 
 .navbar-custom button.navbar-toggler:focus { 
@@ -115,6 +122,11 @@ a { color: inherit; }
 .myImage {
   max-height: 800px;
 }
+
+/*font awesone*/
+/* .fa-heart, .fa-comment-alt {
+  color: rgba(0, 0, 0, .6);
+} */
 
 /* link hover */
 a:hover {

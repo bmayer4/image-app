@@ -64,7 +64,7 @@ UserPage.propTypes = {
   user: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     auth: state.auth,
     errors: state.errors,
