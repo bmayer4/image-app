@@ -16,6 +16,7 @@ class PostPage extends Component {
   componentDidMount() {
     const id = this.props.match.params.id;
     const post = this.props.post.posts.find(p => p._id === id);
+    //finding posts even tho they were cleared when explore unmounted..
     if (post) {
       this.props.getPost(post);
     } else {
@@ -74,8 +75,15 @@ class PostPage extends Component {
       <div className='col-md-2 '>
       <h2 className='py-1 mt-3'>{post.description}</h2>
       <div className='py-1'>By {post.user.firstName} {post.user.lastName}</div>
-      <div className='py-1 mb-3'>Date: {<Moment format="MM/DD/YYYY">{post.date}</Moment>}</div>
+      <div className='py-1'>Date: {<Moment format="MM/DD/YYYY">{post.date}</Moment>}</div>
       <div className='py-1'>{post.likes.length} Likes</div>
+      {
+        auth.isAuthenticated && auth.user.id === post.user._id?
+      <div>
+      <Link to={`/post/edit/${post._id}`}><button className='btn btn-secondary btn-sm mt-3 my-2'>Edit Post</button></Link>
+      <button className='btn btn-danger btn-sm'>Delete Post</button>
+      </div>  : null
+      }
       </div>
 
       <div className='col-md-8 mx-auto'>

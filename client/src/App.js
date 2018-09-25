@@ -26,7 +26,7 @@ class App extends Component {
       <Route path="/explore" component={Explore} />
       <Route path="/posts/:id" component={PostPage} />
       <Route path="/post/add" component={AddPost} />
-      <Route path="/edit/:id" component={EditPost} />
+      <Route path="/post/edit/:id" component={EditPost} />
       <Route path="/login" component={Login} />
       <Route path="/join" component={Join} />
       <Route path="/user/:id" component={UserPage} />

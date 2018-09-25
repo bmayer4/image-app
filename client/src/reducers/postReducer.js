@@ -1,4 +1,4 @@
-import { ADD_POST, POST_LOADING, GET_POSTS, GET_POST, DELETE_POST, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS } from '../actions/types';
+import { ADD_POST, POST_LOADING, GET_POSTS, GET_POST, DELETE_POST, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, CLEAR_USER_POSTS, GET_MORE_USER_POSTS } from '../actions/types';
 
 const initialState = {
     posts: [],
@@ -16,10 +16,17 @@ const postReducer = (state = initialState, action) => {
                 ...state,
                 posts: [action.payload, ...state.posts]
             }
+        // case GET_POSTS:
+        // return {
+        //     ...state,
+        //     posts: action.payload.posts,
+        //     count: action.payload.count,
+        //     loading: false
+        // }
         case GET_POSTS:
         return {
             ...state,
-            posts: action.payload.posts,
+            posts: [...state.posts, ...action.payload.posts],
             count: action.payload.count,
             loading: false
         }
@@ -45,6 +52,17 @@ const postReducer = (state = initialState, action) => {
             userPosts: action.payload,
             loading: false
         }
+        case GET_MORE_USER_POSTS: 
+        return {
+            ...state,
+            userPosts: [...state.posts, ...action.payload],
+            loading: false
+        }
+        case CLEAR_USER_POSTS:
+            return {
+                ...state,
+                userPosts: []
+            }
         case DELETE_POST:
             return {
                 ...state,

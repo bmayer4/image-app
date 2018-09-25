@@ -110,6 +110,7 @@ router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({s
         if (!post) {
             return res.status(404).json({ postnotfound: 'No post found' });
         }
+        console.log(post);
         res.json(post) 
     }).catch(err => res.status(404).json({ updatepost: 'Unable to update post' }));
 });

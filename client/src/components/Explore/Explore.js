@@ -26,7 +26,8 @@ onToggleLike = (id) => {
 
 loadMore = () => {
   const { filters, post } = this.props;
-  this.props.startGetMorePosts(filters.category, post.posts.length, filters.limit);
+  //this.props.startGetMorePosts(filters.category, post.posts.length, filters.limit);
+  this.props.startGetPosts(filters.category, post.posts.length, filters.limit);
 }
 
   render() {

@@ -6,14 +6,14 @@ module.exports = function validatePostInput(data, fileData) {
 
 ;   data.description = !isEmpty(data.description) ? data.description : '';
     data.category = !isEmpty(data.category) ? data.category : '';
-    console.log('filedData', fileData);
+
     if (fileData && fileData.filename) {
         fileData.filename = !isEmpty(fileData.filename) ?  fileData.filename : '';
     } else if (data.image) {
         data.image = !isEmpty( data.image) ?  data.image : '';
     }
 
-    if (!Validator.isLength(data.description, { max: 80 })) {
+    if (!validator.isLength(data.description, { max: 80 })) {
         errors.description = 'Description can not be more than 80 characters';
     }
 

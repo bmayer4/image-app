@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS } from './types';
+import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, CLEAR_USER_POSTS, GET_MORE_USER_POSTS } from './types';
 
 /* thunks */
 export const startAddPost = (postData, history) => dispatch => {
@@ -22,7 +22,7 @@ export const startGetPosts = (category = '', skip = 0, limit = 3) => dispatch =>
 }
 
 export const startGetMorePosts = (category = '', skip = 0, limit = 3) => dispatch => {
-    if (skip === 0) { dispatch(setPostLoading()); }  //so we only load spinner on initial fetch
+    if (skip === 0) { dispatch(setPostLoading()); }  
     axios.get(`/api/posts?category=${category}&skip=${skip}&limit=${limit}`).then(res => {
         dispatch(getMorePosts(res.data));
     }).catch(err => {
@@ -48,6 +48,15 @@ export const startGetUserPosts = (userId) => dispatch => {
     })
 }
 
+export const startGetMoreUserPosts = (userId) => dispatch => {
+    dispatch(setPostLoading());
+    axios.get(`/api/posts/user/${userId}`).then(res => {
+        dispatch(getMoreUserPosts(res.data));  
+    }).catch(err => {
+        dispatch(getMoreUserPosts(null));
+    })
+}
+
 export const startDeletePost = (id) => dispatch => {
     dispatch(clearErrors());
     axios.delete(`/api/posts/${id}`).then(res => {
@@ -57,10 +66,10 @@ export const startDeletePost = (id) => dispatch => {
     })   
 }
 
-export const startUpdatePost = (id, history) => dispatch => {
+export const startUpdatePost = (id, postData, history) => dispatch => {
     dispatch(clearErrors());
-    axios.patch(`/api/posts/${id}`).then(res => {
-        history.goBack();    //may want to go back to profile
+    axios.patch(`/api/posts/${id}`, postData).then(res => {
+        history.push(`/posts/${id}`);    
     }).catch(err => {
         dispatch(getErrors(err.response.data)); 
     })   
@@ -68,7 +77,7 @@ export const startUpdatePost = (id, history) => dispatch => {
 
 export const startToggleLikePost = (id) => dispatch => {
     axios.post(`/api/posts/like/${id}`).then(res => {
-        dispatch(startGetPosts());  //may want reducer for this
+        dispatch(startGetPosts());  
         console.log('liked');
     }).catch(err => {
        dispatch(getErrors(err.response.data)); 
@@ -123,9 +132,18 @@ export const deletePost = (id) => ({
     payload: id
 });
 
-export const getUserPosts = (posts) =>({
+export const getUserPosts = (posts) => ({
     type: GET_USER_POSTS,
     payload: posts
+})
+
+export const getMoreUserPosts = (posts) => ({
+    type: GET_MORE_USER_POSTS,
+    payload: posts
+})
+
+export const clearUserPosts = () => ({
+    type: CLEAR_USER_POSTS
 })
 
 export const setPostLoading = () => ({

@@ -19,14 +19,14 @@ class AddPost extends Component {
         errors: {}
     }
 
-    componentWillReceiveProps(nextProps) {
+    //componentWillReceiveProps(nextProps) {
 
       // if (nextProps.errors) {
       //   this.setState({
       //     errors: nextProps.errors
       //   })
       // }
-  }
+  //}
 
     // componentDidMount() {
     //   if (this.props.auth.isAuthenticated) {
@@ -70,7 +70,6 @@ class AddPost extends Component {
             imagePreview: reader.result
         });
         };
-      
 
         if (file) {
           reader.readAsDataURL(file); 
