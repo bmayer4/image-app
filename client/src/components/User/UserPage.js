@@ -29,8 +29,7 @@ class UserPage extends Component {
   loadMore = () => {
     const userId = this.props.match.params.id;
     const { filters, post } = this.props;
-    // this.props.startGetUserPosts(userId, post.posts.length, filters.limit, true);
-    this.props.startGetUserPosts(userId, post.posts.length, 1, true);
+    this.props.startGetUserPosts(userId, post.posts.length, filters.limit, true);
   }
 
   render() {
@@ -46,7 +45,7 @@ class UserPage extends Component {
     }
 
     let postsLength = this.props.post.posts.length;
-    let button = (postsLength & postsLength !== this.props.post.userPostCount) && (postsLength && postsLength % this.props.filters.limit === 0) ?
+    let button = (postsLength && postsLength !== this.props.post.userPostCount) && (postsLength && postsLength % this.props.filters.limit === 0) ?
                  <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
     return (
