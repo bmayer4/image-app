@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
                 posts: fetchedPosts,
                 count
             })
-        }).catch(err => res.status(404).json());
+        }).catch(err => res.status(404).json({ postserror: 'Unable to retrieve posts' }));
 });
 
 // @route   GET api/posts/:id
@@ -48,10 +48,22 @@ router.get('/:id', (req, res) => {
 // @desc    Get posts by user id
 // @access  Public
 router.get('/user/:userId', (req, res) => {
-    Post.find({ user: req.params.userId }).populate('user', ['firstName', 'lastName', 'date']).then((posts) => {
-        res.json(posts);
-    })
-    .catch(err => res.status(404).json({ postserror: 'Unable to retrieve posts' }));;
+    let fetchedPosts;
+    let skip = +req.query.skip;
+    let limit = +req.query.limit;
+    let postQuery = Post.find({ user: req.params.userId });
+    if (skip !== null && limit !== null) {  //0 limit is equivalent to no limit per mongo docs
+        postQuery.skip(skip).limit(limit);
+    }
+    postQuery.populate('user', ['firstName', 'lastName', 'date']).then((posts) => {
+        fetchedPosts = posts;
+        return Post.countDocuments({ user: req.params.userId }) 
+        }).then(count => {
+            res.json({
+                posts: fetchedPosts,
+                count
+            })
+        }).catch(err => res.status(404).json());
 });
 
 // @route   POST api/posts/

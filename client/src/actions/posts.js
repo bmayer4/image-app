@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, CLEAR_USER_POSTS, GET_MORE_USER_POSTS } from './types';
+import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, GET_MORE_USER_POSTS } from './types';
 
 /* thunks */
 export const startAddPost = (postData, history) => dispatch => {
@@ -12,21 +12,20 @@ export const startAddPost = (postData, history) => dispatch => {
     })
 }
 
-export const startGetPosts = (category = '', skip = 0, limit = 3) => dispatch => {
+export const startGetPosts = (category = '', skip = 0, limit = 3, gettingMore = false) => dispatch => {
     if (skip === 0) { dispatch(setPostLoading()); }  //so we only load spinner on initial fetch
     axios.get(`/api/posts?category=${category}&skip=${skip}&limit=${limit}`).then(res => {
-        dispatch(getPosts(res.data));
+        if (gettingMore) {
+         dispatch(getMorePosts(res.data));
+        } else {
+         dispatch(getPosts(res.data));
+        }
     }).catch(err => {
-        dispatch(getPosts(null));   //no error if no posts
-    })
-}
-
-export const startGetMorePosts = (category = '', skip = 0, limit = 3) => dispatch => {
-    if (skip === 0) { dispatch(setPostLoading()); }  
-    axios.get(`/api/posts?category=${category}&skip=${skip}&limit=${limit}`).then(res => {
-        dispatch(getMorePosts(res.data));
-    }).catch(err => {
-        dispatch(getMorePosts(null));  
+        if (gettingMore) {
+            dispatch(getMorePosts([]));
+           } else {
+            dispatch(getPosts(null));   //no error if no posts
+           }
     })
 }
 
@@ -39,21 +38,16 @@ export const startGetPost = (id) => dispatch => {
     })
 }
 
-export const startGetUserPosts = (userId) => dispatch => {
-    dispatch(setPostLoading());
-    axios.get(`/api/posts/user/${userId}`).then(res => {
-        dispatch(getUserPosts(res.data));  //no posts from api wouldn't return error
+export const startGetUserPosts = (userId, skip = 0, limit = 6, gettingMore = false) => dispatch => {
+    if (skip === 0) { dispatch(setPostLoading()); }
+    axios.get(`/api/posts/user/${userId}?skip=${skip}&limit=${limit}`).then(res => {
+        if (gettingMore) {
+            dispatch(getMoreUserPosts(res.data));  
+        } else {
+            dispatch(getUserPosts(res.data));  
+        }
     }).catch(err => {
         dispatch(getUserPosts(null));
-    })
-}
-
-export const startGetMoreUserPosts = (userId) => dispatch => {
-    dispatch(setPostLoading());
-    axios.get(`/api/posts/user/${userId}`).then(res => {
-        dispatch(getMoreUserPosts(res.data));  
-    }).catch(err => {
-        dispatch(getMoreUserPosts(null));
     })
 }
 
@@ -140,10 +134,6 @@ export const getUserPosts = (posts) => ({
 export const getMoreUserPosts = (posts) => ({
     type: GET_MORE_USER_POSTS,
     payload: posts
-})
-
-export const clearUserPosts = () => ({
-    type: CLEAR_USER_POSTS
 })
 
 export const setPostLoading = () => ({

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { startGetPosts, startToggleLikePost, resetPosts, startGetMorePosts } from '../../actions/posts';
+import { startGetPosts, startToggleLikePost, resetPosts } from '../../actions/posts';
 import { clearFilters } from '../../actions/filters';
 import PostItem from './PostItem';
 import PostFilters from '../Filters/PostFilters';
@@ -12,7 +12,7 @@ class Explore extends Component {
 
 componentDidMount() {
     const { filters } = this.props;
-    this.props.startGetPosts(filters.category, 0, filters.limit); 
+    this.props.startGetPosts(filters.category, 0, filters.limit, false); 
 }
 
 componentWillUnmount() {
@@ -26,8 +26,7 @@ onToggleLike = (id) => {
 
 loadMore = () => {
   const { filters, post } = this.props;
-  //this.props.startGetMorePosts(filters.category, post.posts.length, filters.limit);
-  this.props.startGetPosts(filters.category, post.posts.length, filters.limit);
+  this.props.startGetPosts(filters.category, post.posts.length, filters.limit, true);
 }
 
   render() {
@@ -43,7 +42,7 @@ loadMore = () => {
     }
 
     let postsLength = this.props.post.posts.length;
-    let button = (postsLength & postsLength !== filters.count) && (postsLength && postsLength % filters.limit === 0) ?
+    let button = (postsLength && postsLength !== this.props.post.count) && (postsLength && postsLength % filters.limit === 0) ?
                  <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
     return (
@@ -62,7 +61,6 @@ loadMore = () => {
 Explore.propTypes = { 
     post: PropTypes.object.isRequired,
     startGetPosts: PropTypes.func.isRequired,
-    startGetMorePosts: PropTypes.func.isRequired,
     startToggleLikePost: PropTypes.func.isRequired,
     clearFilters: PropTypes.func.isRequired,
     resetPosts: PropTypes.func.isRequired,
@@ -77,8 +75,7 @@ Explore.propTypes = {
   })
   
   const mapDispatchToProps = (dispatch) => ({
-    startGetPosts: (cat, skip, limit) => dispatch(startGetPosts(cat, skip, limit)),
-    startGetMorePosts: (cat, skip, limit) => dispatch(startGetMorePosts(cat, skip, limit)),
+    startGetPosts: (cat, skip, limit, gettingMore) => dispatch(startGetPosts(cat, skip, limit, gettingMore)),
     startToggleLikePost: (id) => dispatch(startToggleLikePost(id)),
     clearFilters: () => dispatch(clearFilters()),
     resetPosts: () => dispatch(resetPosts())
