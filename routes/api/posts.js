@@ -81,7 +81,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
 
     const newPost = new Post({
         description,
-        category: category.ToLowerCase(),
+        category: category.toLowerCase(),
         user: req.user.id,
         imagePath: url + '/images/' + req.file.filename
     });

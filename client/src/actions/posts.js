@@ -51,10 +51,11 @@ export const startGetUserPosts = (userId, skip = 0, limit = 6, gettingMore = fal
     })
 }
 
-export const startDeletePost = (id) => dispatch => {
+export const startDeletePost = (id, history) => dispatch => {
     dispatch(clearErrors());
     axios.delete(`/api/posts/${id}`).then(res => {
         dispatch(deletePost(id));
+        history.push('/explore');
     }).catch(err => {
         dispatch(getErrors(err.response.data)); 
     })   

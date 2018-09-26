@@ -2,18 +2,23 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { startGetPost, getPost, startAddComment, startDeleteComment } from '../../actions/posts';
+import { startGetPost, getPost, startAddComment, startDeleteComment, startDeletePost } from '../../actions/posts';
 import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
 import Moment from 'react-moment';
+import Spinner from '../Spinner/Spinner';
+import Modal from 'react-modal';
 
 class PostPage extends Component {
 
   state = {
-    text: ''
+    text: '',
+    modalOpen: false
   }
 
   componentDidMount() {
+    
+  Modal.setAppElement('#myModal');
     const id = this.props.match.params.id;
     const post = this.props.post.posts.find(p => p._id === id);
     //finding posts even tho they were cleared when explore unmounted..
@@ -54,9 +59,25 @@ class PostPage extends Component {
       this.setState({ text: '' });
   }
 
+  handleModalOpen = () => {
+    this.setState({
+      modalOpen: true
+    })
+  }
+
+  onRemovePost = () => {
+    this.props.startDeletePost(this.props.post.post._id, this.props.history);
+  }
+
+  handleModalClose = () => {
+    this.setState({
+      modalOpen: false
+    })
+  }
+
   onDeleteComment = (postId, id) => {
     this.props.startDeleteComment(postId, id);
-}
+  }
 
   render() {
 
@@ -65,7 +86,7 @@ class PostPage extends Component {
     let postContent;
     let getComments;
     if (this.props.post.loading) {
-      postContent = <div>Loading...</div>
+      postContent = <Spinner />
     } else if (post && Object.keys(post).length > 0) {
       getComments = post.comments.map((c, i) => <CommentItem key={i} comment={c} auth={auth} postId={post._id} deleteComment={this.onDeleteComment}></CommentItem>);
       postContent = (
@@ -80,8 +101,8 @@ class PostPage extends Component {
       {
         auth.isAuthenticated && auth.user.id === post.user._id?
       <div>
-      <Link to={`/post/edit/${post._id}`}><button className='btn btn-secondary btn-sm mt-3 my-2'>Edit Post</button></Link>
-      <button className='btn btn-danger btn-sm'>Delete Post</button>
+      <Link to={`/post/edit/${post._id}`}><button className='btn btn-info btn-sm mt-3 my-2'>Edit Post</button></Link>
+      <button className='btn btn-danger btn-sm' onClick={this.handleModalOpen}>Delete Post</button>
       </div>  : null
       }
       </div>
@@ -91,7 +112,7 @@ class PostPage extends Component {
       { auth.isAuthenticated ? <CommentForm onCommentChange={this.onChange} onSubmit={this.onSubmit} /> : <div className='mt-5 mb-3 text-muted'>Please <Link to={'/login'} className='text-info'>Log in</Link> to comment</div>}
       { post.comments.length ? getComments : <div className='mt-4'>No Comments yet...</div> }
       </div>
-  
+
       </div>
       <div className='addMarginToTop'></div>
       </div>
@@ -100,8 +121,23 @@ class PostPage extends Component {
 
 
     return (
-      <div className='py-5'>
+      <div className='py-5' id="myModal">
       { postContent }
+
+      <Modal
+      isOpen={this.state.modalOpen} 
+      onRequestClose={this.handleModalClose}  
+      contentLabel="Remove"
+      closeTimeoutMS={200}
+      className="Modal"
+      overlayClassName="Overlay"
+
+      >
+      <h5 className="">Remove Post?</h5>
+      <button className="btn btn-sm btn-info m-1" onClick={this.handleModalClose}>Cancel</button>
+      <button className="btn btn-sm btn-danger m-1" onClick={this.onRemovePost}>Remove</button>
+      </Modal>
+ 
       </div>
     )
 }
@@ -111,6 +147,7 @@ PostPage.propTypes = {
   startGetPost: PropTypes.func.isRequired,
   startAddComment: PropTypes.func.isRequired,
   startDeleteComment: PropTypes.func.isRequired,
+  startDeletePost: PropTypes.func.isRequired,
   getPost: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
@@ -129,7 +166,8 @@ const mapDispatchToProps = (dispatch) => ({
   startGetPost: (id) => dispatch( startGetPost(id)),
   getPost: (post) => dispatch(getPost(post)),
   startAddComment: (postId, commentData) => dispatch(startAddComment(postId, commentData)),
-  startDeleteComment: (postId, id) => dispatch(startDeleteComment(postId, id))
+  startDeleteComment: (postId, id) => dispatch(startDeleteComment(postId, id)),
+  startDeletePost: (id, history) => dispatch(startDeletePost(id, history))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostPage);

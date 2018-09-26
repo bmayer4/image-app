@@ -5,6 +5,7 @@ import { startGetUserPosts, resetPosts } from '../../actions/posts';
 import { startGetUser, clearUser } from '../../actions/user';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
+import Spinner from '../Spinner/Spinner';
 
 class UserPage extends Component {
 
@@ -37,7 +38,7 @@ class UserPage extends Component {
     const { auth, post, user } = this.props;
 
     if (post.loading) {
-      pageContent = 'Loading...';
+      pageContent = <Spinner />
     } else if (post.posts && post.posts.length) {
       pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} />)
     } else if (post.posts && post.posts.length === 0) {

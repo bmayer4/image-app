@@ -6,6 +6,7 @@ import { startGetPosts, startToggleLikePost, resetPosts } from '../../actions/po
 import { clearFilters } from '../../actions/filters';
 import PostItem from './PostItem';
 import PostFilters from '../Filters/PostFilters';
+import Spinner from '../Spinner/Spinner';;
 
 
 class Explore extends Component {
@@ -34,7 +35,7 @@ loadMore = () => {
     let { posts, loading } = this.props.post;
     let postContent;
     if (loading) {
-        postContent = '...'
+        postContent = <Spinner />
     } else if (posts && posts.length) {
         postContent = posts.map((p, i) => <PostItem key={i} post={p} toggleLike={this.onToggleLike} auth={auth} />)
     } else {
