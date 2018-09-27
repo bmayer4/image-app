@@ -83,3 +83,12 @@ Explore.propTypes = {
   })
   
   export default connect(mapStateToProps, mapDispatchToProps)(Explore);
+
+
+  //TODO**
+  //guard routes
+  //keep logged in
+  //errors
+  //ui, hover name on post item
+  //Add a my page
+  //fix likes reload

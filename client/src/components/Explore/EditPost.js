@@ -134,7 +134,7 @@ class EditPost extends Component {
      <div className="py-5 myForm">
         <div className="container">
           <div className="row">
-            <div className="col-md-8 m-auto">
+            <div className="col-md-8 mx-auto">
               <h1 className="display-4 text-center">Edit Post</h1>
               <p className="lead text-muted text-center">Share your imagery</p>
               <form noValidate onSubmit={this.onSubmit}>

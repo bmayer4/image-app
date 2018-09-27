@@ -7,7 +7,7 @@ import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
 import Moment from 'react-moment';
 import Spinner from '../Spinner/Spinner';
-import Modal from 'react-modal';
+import RemovePostModal from '../Modal/RemovePostModal';
 
 class PostPage extends Component {
 
@@ -17,8 +17,6 @@ class PostPage extends Component {
   }
 
   componentDidMount() {
-    
-  Modal.setAppElement('#myModal');
     const id = this.props.match.params.id;
     const post = this.props.post.posts.find(p => p._id === id);
     //finding posts even tho they were cleared when explore unmounted..
@@ -102,7 +100,7 @@ class PostPage extends Component {
         auth.isAuthenticated && auth.user.id === post.user._id?
       <div>
       <Link to={`/post/edit/${post._id}`}><button className='btn btn-info btn-sm mt-3 my-2'>Edit Post</button></Link>
-      <button className='btn btn-danger btn-sm' onClick={this.handleModalOpen}>Delete Post</button>
+      <button className='btn btn-secondary btn-sm' onClick={this.handleModalOpen}>Delete Post</button>
       </div>  : null
       }
       </div>
@@ -124,20 +122,7 @@ class PostPage extends Component {
       <div className='py-5' id="myModal">
       { postContent }
 
-      <Modal
-      isOpen={this.state.modalOpen} 
-      onRequestClose={this.handleModalClose}  
-      contentLabel="Remove"
-      closeTimeoutMS={200}
-      className="Modal"
-      overlayClassName="Overlay"
-
-      >
-      <h5 className="">Remove Post?</h5>
-      <button className="btn btn-sm btn-info m-1" onClick={this.handleModalClose}>Cancel</button>
-      <button className="btn btn-sm btn-danger m-1" onClick={this.onRemovePost}>Remove</button>
-      </Modal>
- 
+      <RemovePostModal modalOpen={this.state.modalOpen} closeModal={this.handleModalClose} removePost={this.onRemovePost}/>
       </div>
     )
 }
@@ -171,3 +156,5 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostPage);
+
+
