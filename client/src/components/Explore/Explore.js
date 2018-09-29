@@ -86,7 +86,6 @@ Explore.propTypes = {
 
 
   //TODO**
-  //guard routes
   //keep logged in
   //errors
   //ui, hover name on post item

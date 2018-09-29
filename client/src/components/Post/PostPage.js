@@ -107,7 +107,7 @@ class PostPage extends Component {
 
       <div className='col-md-8 mx-auto'>
       <img className='myImage img-fluid rounded' src={post.imagePath} alt=''></img>
-      { auth.isAuthenticated ? <CommentForm onCommentChange={this.onChange} onSubmit={this.onSubmit} /> : <div className='mt-5 mb-3 text-muted'>Please <Link to={'/login'} className='text-info'>Log in</Link> to comment</div>}
+      { auth.isAuthenticated ? <CommentForm onCommentChange={this.onChange} onSubmit={this.onSubmit} text={this.state.text} /> : <div className='mt-5 mb-3 text-muted'>Please <Link to={'/login'} className='text-info'>Log in</Link> to comment</div>}
       { post.comments.length ? getComments : <div className='mt-4'>No Comments yet...</div> }
       </div>
 
