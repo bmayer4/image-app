@@ -12,6 +12,9 @@ import Login from './components/Auth/Login';
 import NotFound from './components/NotFound';
 import PostPage from './components/Post/PostPage';
 import UserPage from './components/User/UserPage';
+import PrivateRoute from './components/Routes/PrivateRoute';
+import PublicRoute from './components/Routes/PublicRoute';
+
 
 
 class App extends Component {
@@ -25,10 +28,10 @@ class App extends Component {
       <Route path="/" component={Landing} exact />
       <Route path="/explore" component={Explore} />
       <Route path="/posts/:id" component={PostPage} />
-      <Route path="/post/add" component={AddPost} />
-      <Route path="/post/edit/:id" component={EditPost} />
-      <Route path="/login" component={Login} />
-      <Route path="/join" component={Join} />
+      <PrivateRoute path="/post/add" component={AddPost} />
+      <PrivateRoute path="/post/edit/:id" component={EditPost} />
+      <PublicRoute path="/login" component={Login} />
+      <PublicRoute path="/join" component={Join} />
       <Route path="/user/:id" component={UserPage} />
       <Route component={NotFound} />
       </Switch>
