@@ -2,22 +2,19 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { startGetUserPosts, resetPosts } from '../../actions/posts';
-import { startGetUser, clearUser } from '../../actions/user';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
 import Spinner from '../Spinner/Spinner';
 
-class UserPage extends Component {
+class Home extends Component {
 
   componentDidMount() {
-    const userId = this.props.match.params.id;
+    const userId = this.props.auth.user.id;
     const { filters } = this.props;
     this.props.startGetUserPosts(userId, 0, filters.limit, false);
-    this.props.startGetUser(userId);
   }
 
   componentWillUnmount() {
-    this.props.clearUser(); 
     this.props.resetPosts();
   }
 
@@ -28,21 +25,21 @@ class UserPage extends Component {
   }
 
   loadMore = () => {
-    const userId = this.props.match.params.id;
+    const userId = this.props.auth.user.id; 
     const { filters, post } = this.props;
     this.props.startGetUserPosts(userId, post.posts.length, filters.limit, true);
   }
 
   render() {
     let pageContent;
-    const { auth, post, user, filters } = this.props;
+    const { auth, post, filters } = this.props;
 
     if (post.loading) {
       pageContent = <Spinner />
     } else if (post.posts && post.posts.length) {
       pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} />)
     } else if (post.posts && post.posts.length === 0) {
-      pageContent = <div>This user has no posts...</div>
+      pageContent = <div>You have no posts...</div>
     }
 
     let postsLength = post.posts && post.posts.length;
@@ -51,17 +48,12 @@ class UserPage extends Component {
 
     return (
       <div className='container mt-3'>
-      {
-        user.user && Object.keys(user.user).length ?
       <div className='py-3 text-center'>
-      <h2> { user.user.firstName } { user.user.lastName}</h2>
-      <div>Member since: { <Moment format="MM/DD/YYYY">{user.user.date}</Moment> }</div>
+      <h2> { auth.user.firstName } { auth.user.lastName}</h2>
+      <div>Member since: { <Moment format="MM/DD/YYYY">{auth.user.date}</Moment> }</div>
       <div>Images: { post.userPostCount }</div>
       </div>
-      :
-      null
-      }
-      <div className='text-center'>{ user.user.firstName ? <div>Photos by { user.user.firstName }</div> : null }</div>
+      <div className='text-center'><div>Photos by You</div></div>
       <div className='row'>
         { pageContent }
       </div>
@@ -72,9 +64,8 @@ class UserPage extends Component {
   }
 }
 
-UserPage.propTypes = {
+Home.propTypes = {
   startGetUserPosts: PropTypes.func.isRequired,
-  clearUser: PropTypes.func.isRequired,
   resetPosts: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
@@ -95,10 +86,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   startGetUserPosts: (userId, skip, limit, loadMore) => dispatch(startGetUserPosts(userId, skip, limit, loadMore)),
-  startGetUser: (userId) => dispatch(startGetUser(userId)),
-  clearUser: () => dispatch(clearUser()),
   resetPosts: () => dispatch(resetPosts())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserPage);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
 

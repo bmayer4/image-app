@@ -12,19 +12,19 @@ export const startAddPost = (postData, history) => dispatch => {
     })
 }
 
-export const startGetPosts = (category = '', skip = 0, limit = 3, gettingMore = false) => dispatch => {
-    if (skip === 0) { dispatch(setPostLoading()); }  //so we only load spinner on initial fetch
+export const startGetPosts = (category = '', skip = 0, limit = 3, loadMore = false) => dispatch => {
+    if (skip === 0) { dispatch(setPostLoading()); }  //only load spinner on initial fetch
     axios.get(`/api/posts?category=${category}&skip=${skip}&limit=${limit}`).then(res => {
-        if (gettingMore) {
-         dispatch(getMorePosts(res.data));
+        if (loadMore) {
+         dispatch(getMorePosts(res.data)); 
         } else {
          dispatch(getPosts(res.data));
         }
     }).catch(err => {
-        if (gettingMore) {
-            dispatch(getMorePosts([]));
+        if (loadMore) {
+            dispatch(getMorePosts([])); 
            } else {
-            dispatch(getPosts(null));   //no error if no posts
+            dispatch(getPosts({}));   //not empty posts, an actual server error sets posts to null and component redirects off null check
            }
     })
 }
@@ -38,16 +38,16 @@ export const startGetPost = (id) => dispatch => {
     })
 }
 
-export const startGetUserPosts = (userId, skip = 0, limit = 6, gettingMore = false) => dispatch => {
+export const startGetUserPosts = (userId, skip = 0, limit = 6, loadMore = false) => dispatch => {
     if (skip === 0) { dispatch(setPostLoading()); }
     axios.get(`/api/posts/user/${userId}?skip=${skip}&limit=${limit}`).then(res => {
-        if (gettingMore) {
+        if (loadMore) {
             dispatch(getMoreUserPosts(res.data));  
         } else {
             dispatch(getUserPosts(res.data));  
         }
     }).catch(err => {
-        dispatch(getUserPosts(null));
+        dispatch(getUserPosts({}));
     })
 }
 

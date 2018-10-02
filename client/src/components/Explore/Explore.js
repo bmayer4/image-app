@@ -76,7 +76,7 @@ Explore.propTypes = {
   })
   
   const mapDispatchToProps = (dispatch) => ({
-    startGetPosts: (cat, skip, limit, gettingMore) => dispatch(startGetPosts(cat, skip, limit, gettingMore)),
+    startGetPosts: (cat, skip, limit, loadMore) => dispatch(startGetPosts(cat, skip, limit, loadMore)),
     startToggleLikePost: (id) => dispatch(startToggleLikePost(id)),
     clearFilters: () => dispatch(clearFilters()),
     resetPosts: () => dispatch(resetPosts())
@@ -88,6 +88,5 @@ Explore.propTypes = {
   //TODO**
   //keep logged in
   //errors
-  //ui, hover name on post item
   //Add a my page
   //fix likes reload

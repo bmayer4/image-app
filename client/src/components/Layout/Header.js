@@ -20,8 +20,11 @@ const Header = ({ auth, logoutUser, history }) => {
             <Link to='/explore' className="nav-link">Explore</Link>
         </li>
         <li className="nav-item">
-        <Link to='/post/add' className="nav-link">Add Post</Link>
-    </li>
+            <Link to='/home' className="nav-link">Home</Link>
+        </li>
+        <li className="nav-item">
+            <Link to='/post/add' className="nav-link">Add Post</Link>
+        </li>
         <li className="nav-item">
             <a href='' className="nav-link" onClick={onLogout}>Logout</a>
         </li>

@@ -1,7 +1,7 @@
 import { GET_USER, CLEAR_USER } from '../actions/types';
 
 const initialState = {
-    user: {}
+    user: {},
 }
 
 const userReducer = (state = initialState, action) => {
