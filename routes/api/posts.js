@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
     let fetchedPosts;
     let skip = +req.query.skip;
     let limit = +req.query.limit;
-    let category = req.query.category;
+    let category = req.query.category;  //TODO, find count by categiry if category
     let postQuery = category ? Post.find({ category: category.toLowerCase() }) : Post.find();
     if (skip !== null && limit !== null) {  //0 limit is equivalent to no limit per mongo docs
         postQuery.skip(skip).limit(limit);
