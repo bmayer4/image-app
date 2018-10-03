@@ -13,12 +13,12 @@ const storage = multer.diskStorage({
         if (isValid) {
             error = null;
         }
-        cb(error, '../images/'); //save to images folder 
+        cb(error, 'images'); 
      },
      filename: (req, file, cb) => {
          const name = file.originalname.toLowerCase().split(' ').join('-');
          const ext = MIME_TYPE_MAP[file.mimetype];
-         cb(null, name + '.' + ext);
+         cb(null, name + '_' + Date.now() + '.' + ext);
      }
 });
 

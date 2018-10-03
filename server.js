@@ -29,9 +29,7 @@ mongoose.connect(keys.mongoURI, { useNewUrlParser: true }).then(() => {
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 
-
-app.use('/images', express.static(path.join(__dirname, 'images')));  //any req targeting /images will be forwarded to backend/images and allowed to continue
-
+app.use('/images', express.static(path.join(__dirname, 'images')));
 if (process.env.NODE_ENV === 'production') {
     app.use('/images', express.static(path.join(__dirname, 'images')));
     app.use('/', express.static('client/build'));
