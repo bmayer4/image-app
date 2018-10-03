@@ -95,7 +95,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
         imagePath: url + '/images/' + req.file.filename
     });
 
-    newPost.save().then(post => res.json(post)).catch(e => res.json(e));
+    newPost.save().then(post => res.json(post)).catch(e => res.status(403).json(e));
 });
 
 
