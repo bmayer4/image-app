@@ -74,14 +74,14 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
 
     if (!isValid) { 
         if (!req.file) { 
-            errors.image = 'Image required'
+            errors.image = 'Image required';
             return res.status(400).json(errors); 
         }
         return res.status(400).json(errors) 
     }
 
     if (!req.file) { 
-        errors.image = 'Image required'
+        errors.image = 'Image required';
         return res.status(400).json(errors); 
     }
 
@@ -121,16 +121,17 @@ router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({s
         return res.status(400).json(errors);
     }
 
+    //Not using the image validation on client because you can't submit button without image
+    // if (!req.body.imagePath  || !req.file) {
+    //     errors.image = 'Image required'; 
+    //     return res.status(400).json(errors);
+    // }
+
     const { description, category } = req.body;
     let imagePath = req.body.imagePath;  
     if (req.file) {
         const url = req.protocol + '://' + req.get('host');
         imagePath = url + '/images/' + req.file.filename;
-    }
-
-    if (!imagePath) {
-        errors.image = 'Image required';
-        return res.status(400).json(errors);
     }
 
     Post.findOneAndUpdate({ user: req.user.id, _id: req.params.id}, { $set: { description, category, imagePath }}, { new: true }).then((post) => { 
