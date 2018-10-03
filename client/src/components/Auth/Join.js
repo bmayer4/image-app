@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { registerUser } from '../../actions/auth';
+import { clearErrors } from '../../actions/auth';
 
 
 class Join extends Component {
@@ -10,27 +11,12 @@ class Join extends Component {
         firstName: '',
         lastName: '',
         email: '',
-        password: '',
-        errors: {}
+        password: ''
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //   if (nextProps.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
-
-    //   if (nextProps.errors) {
-    //     this.setState({
-    //       errors: nextProps.errors
-    //     })
-    //   }
-    // }
-
-    // componentDidMount() {
-    //   if (this.props.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
-    // }
+    componentWillUnmount() {
+      this.props.clearErrors();
+    }
 
     onChange = (e) => {
         this.setState({
@@ -51,7 +37,8 @@ class Join extends Component {
 
   render() {
 
-    const { errors, email, password, firstName, lastName } = this.state;
+    const { email, password, firstName, lastName } = this.state;
+    const { errors } = this.props;
     const shouldDisable = !email || !password || !firstName || !lastName;
 
 
@@ -66,22 +53,22 @@ class Join extends Component {
               <div className="form-group">
               <label htmlFor="firstName">First Name</label>
               <input type="text" id="firstName" className={`form-control ${errors.firstName && 'is-invalid'}`} autoFocus value={this.state.firstName} name="firstName" onChange={this.onChange}/>
-              <div className="invalid-feedback">{errors.firstName}</div>
+              { errors.firstName && <div className="invalid-feedback">{errors.firstName}</div> }
               </div>
               <div className="form-group">
               <label htmlFor="lastName">Last Name</label>
               <input type="text" id="lastName" className={`form-control ${errors.lastName && 'is-invalid'}`} value={this.state.lastName} name="lastName" onChange={this.onChange}/>
-              <div className="invalid-feedback">{errors.lastName}</div>
+              { errors.lastName && <div className="invalid-feedback">{errors.lastName}</div> }
               </div>              
                 <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input type="text" id="email" className={`form-control ${errors.email && 'is-invalid'}`} value={this.state.email} name="email" onChange={this.onChange}/>
-                <div className="invalid-feedback">{errors.email}</div>
+                { errors.email && <div className="invalid-feedback">{errors.email}</div> }
                 </div>
                 <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input type="password" id="password" className={`form-control ${errors.password && 'is-invalid'}`} value={this.state.password} name="password" onChange={this.onChange}/>
-                <div className="invalid-feedback">{ errors.password }</div>
+                { errors.password && <div className="invalid-feedback">{errors.password}</div> }
                 </div>
                 <input disabled={shouldDisable} type="submit" className="btn btn-info mt-4" />
               </form>
@@ -96,6 +83,7 @@ class Join extends Component {
 
 Join.propTypes = {
   registerUser: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 }
@@ -106,7 +94,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    registerUser: (userData, history) => dispatch(registerUser(userData, history))
+    registerUser: (userData, history) => dispatch(registerUser(userData, history)),
+    clearErrors: () => dispatch(clearErrors())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Join);

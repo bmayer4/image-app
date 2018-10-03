@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { startGetPost, getPost, startUpdatePost } from '../../actions/posts';
+import { clearErrors } from '../../actions/auth';
 
 
 class EditPost extends Component {
@@ -22,15 +23,18 @@ class EditPost extends Component {
       }
     }
 
-    state = {  //if post found already below runs and componentDidUpdate is not ran (if block fails), otherwise state is set buy componentDidUpdate
+    state = {  //if post found already below runs and componentDidUpdate is not ran (if block fails), otherwise state is set by componentDidUpdate
         description: this.props.post.post && this.props.post.post.description,
         category: this.props.post.post && this.props.post.post.category,
         imagePreview: this.props.post.post && this.props.post.post.imagePath,
-        image: this.props.post.post && this.props.post.post.imagePath,
-        errors: {}
+        image: this.props.post.post && this.props.post.post.imagePath
     }
 
-    componentDidUpdate(prevProps) {  //wouldn't do anything if post was the same befoe and going to this page
+    componentWillUnmount() {
+      this.props.clearErrors();
+    }
+
+    componentDidUpdate(prevProps) {  //wouldn't do anything if post was the same before and going to this page
       if (prevProps.post.post !== this.props.post.post) {
         const post = (this.props.post.post);
         if (post) {
@@ -44,24 +48,6 @@ class EditPost extends Component {
         }
       } 
     }
-
-    // componentWillReceiveProps(nextProps) {
-    //   if (nextProps.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
-
-    //   if (nextProps.errors) {
-    //     this.setState({
-    //       errors: nextProps.errors
-    //     })
-    //   }
-    // }
-
-    // componentDidMount() {
-    //   if (this.props.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
-    // }
 
     onChange = (e) => {
         this.setState({
@@ -141,18 +127,19 @@ class EditPost extends Component {
                 <div className="form-group">
                 <label htmlFor="description">Description</label>
                 <input type="text" id="description" className={`form-control ${errors.description && 'is-invalid'}`} autoFocus value={description || ''} name="description" onChange={this.onChange}/>
-                <div className="invalid-feedback">{errors.description}</div>
+                { errors.description && <div className="invalid-feedback">{errors.description}</div> }
                 </div>
                 <div className="form-group">
                 <label>Category</label>
-                <select className='form-control' name='category' value={category} onChange={this.onChange}>
+                <select className={`form-control ${errors.category && 'is-invalid'}`} name='category' value={category} onChange={this.onChange}>
                     {selectOptions}
                 </select>
+                { errors.category && <div className="invalid-feedback">{errors.category}</div> }
                 </div>
 
                 <div className='form-group'>
                 <button type='button' className='btn btn-secondary' onClick={this.showFileUpload}>Add Image</button>
-                <input ref={this.myRef} className='myFile form-control-file' onChange={this.onImageUpload} type="file"/>
+                <input ref={this.myRef} className='myFIle form-control-file' onChange={this.onImageUpload} type="file"/>
                 </div>
                 {
                     this.state.imagePreview ? (
@@ -177,6 +164,7 @@ EditPost.propTypes = {
   startGetPost: PropTypes.func.isRequired,
   getPost: PropTypes.func.isRequired,
   startUpdatePost: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   post: PropTypes.object.isRequired
@@ -191,7 +179,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   startGetPost: (id) => dispatch( startGetPost(id)),
   getPost: (post) => dispatch(getPost(post)),
-  startUpdatePost: (id, postData, history) => dispatch(startUpdatePost(id, postData, history))
+  startUpdatePost: (id, postData, history) => dispatch(startUpdatePost(id, postData, history)),
+  clearErrors: () => dispatch(clearErrors())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPost);

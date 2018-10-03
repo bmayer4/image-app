@@ -70,10 +70,19 @@ router.get('/user/:userId', (req, res) => {
 // @desc    Create posts
 // @access  Private
 router.post('/', passport.authenticate('jwt', { session: false }), multer({storage: storage}).single('image'), (req, res) => {
-    const { errors, isValid} = validatePostInput(req.body, req.file);
+    const { errors, isValid} = validatePostInput(req.body);
 
     if (!isValid) { 
+        if (!req.file) { 
+            errors.image = 'Image required'
+            return res.status(400).json(errors); 
+        }
         return res.status(400).json(errors) 
+    }
+
+    if (!req.file) { 
+        errors.image = 'Image required'
+        return res.status(400).json(errors); 
     }
 
     const { description, category } = req.body;
@@ -118,6 +127,12 @@ router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({s
         const url = req.protocol + '://' + req.get('host');
         imagePath = url + '/images/' + req.file.filename;
     }
+
+    if (!imagePath) {
+        errors.image = 'Image required';
+        return res.status(400).json(errors);
+    }
+
     Post.findOneAndUpdate({ user: req.user.id, _id: req.params.id}, { $set: { description, category, imagePath }}, { new: true }).then((post) => { 
         if (!post) {
             return res.status(404).json({ postnotfound: 'No post found' });

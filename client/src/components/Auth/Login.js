@@ -2,14 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { loginUser } from '../../actions/auth';
+import { clearErrors } from '../../actions/auth';
 
 
 class Login extends Component {
 
     state = {
         email: '',
-        password: '',
-        errors: {}
+        password: ''
+    }
+
+    componentWillUnmount() {
+      this.props.clearErrors();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -23,12 +27,6 @@ class Login extends Component {
     //     })
     //   }
     }
-
-    // componentDidMount() {
-    //   if (this.props.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
-    // }
 
     onChange = (e) => {
         this.setState({
@@ -47,7 +45,8 @@ class Login extends Component {
 
   render() {
 
-    const { errors, email, password } = this.state;
+    const { email, password } = this.state;
+    const { errors } = this.props;
     const shouldDisable = !email || !password;
 
     return (
@@ -61,12 +60,12 @@ class Login extends Component {
                 <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input type="text" id="email" className={`form-control ${errors.email && 'is-invalid'}`} autoFocus value={this.state.email} name="email" onChange={this.onChange}/>
-                <div className="invalid-feedback">{errors.email}</div>
+                { errors.email && <div className="invalid-feedback">{errors.email}</div> }
                 </div>
                 <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input type="password" id="password" className={`form-control ${errors.password && 'is-invalid'}`} value={this.state.password} name="password" onChange={this.onChange}/>
-                <div className="invalid-feedback">{ errors.password }</div>
+                { errors.password && <div className="invalid-feedback">{errors.password}</div> }
                 </div>
                 <input disabled={shouldDisable} type="submit" className="btn btn-info mt-4" />
               </form>
@@ -81,6 +80,7 @@ class Login extends Component {
 
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 }
@@ -91,7 +91,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  loginUser: (userData) => dispatch(loginUser(userData))
+  loginUser: (userData) => dispatch(loginUser(userData)),
+  clearErrors: () => dispatch(clearErrors())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

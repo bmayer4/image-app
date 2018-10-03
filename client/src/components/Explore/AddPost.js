@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { startAddPost } from '../../actions/posts';
+import { clearErrors } from '../../actions/auth';
 
 
 class AddPost extends Component {
@@ -15,24 +16,12 @@ class AddPost extends Component {
         description: '',
         category: '',
         imagePreview: '',
-        image: null,
-        errors: {}
+        image: null
     }
 
-    //componentWillReceiveProps(nextProps) {
-
-      // if (nextProps.errors) {
-      //   this.setState({
-      //     errors: nextProps.errors
-      //   })
-      // }
-  //}
-
-    // componentDidMount() {
-    //   if (this.props.auth.isAuthenticated) {
-    //     this.props.history.push('/dashboard');
-    //   }
-    // }
+    componentWillUnmount() {
+      this.props.clearErrors();
+    }
 
     onChange = (e) => {
         this.setState({
@@ -91,7 +80,6 @@ class AddPost extends Component {
             {c}
         </option>
     ));
-
     return (
      <div className="py-5 myForm">
         <div className="container">
@@ -103,13 +91,14 @@ class AddPost extends Component {
                 <div className="form-group">
                 <label htmlFor="description">Description</label>
                 <input type="text" id="description" className={`form-control ${errors.description && 'is-invalid'}`} autoFocus value={description} name="description" onChange={this.onChange}/>
-                <div className="invalid-feedback">{errors.description}</div>
+                { errors.description && <div className="invalid-feedback">{errors.description}</div> }
                 </div>
                 <div className="form-group">
                 <label>Category</label>
-                <select className='form-control' name='category' value={category} onChange={this.onChange}>
+                <select className={`form-control ${errors.category && 'is-invalid'}`} name='category' value={category} onChange={this.onChange}>
                     {selectOptions}
                 </select>
+                { errors.category && <div className="invalid-feedback">{errors.category}</div> }
                 </div>
                 <div className='form-group'>
                 <button type='button' className='btn btn-secondary' onClick={this.showFileUpload}>Add Image</button>
@@ -135,6 +124,7 @@ class AddPost extends Component {
 
 AddPost.propTypes = {
   startAddPost: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   post: PropTypes.object.isRequired
@@ -147,7 +137,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  startAddPost: (postData, history) => dispatch(startAddPost(postData, history))
+  startAddPost: (postData, history) => dispatch(startAddPost(postData, history)),
+  clearErrors: () => dispatch(clearErrors())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddPost);

@@ -86,6 +86,5 @@ Explore.propTypes = {
 
 
   //TODO**
-  //keep logged in
   //errors
   //fix likes reload
