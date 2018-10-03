@@ -30,11 +30,11 @@ app.use('/api/users', users);
 app.use('/api/posts', posts);
 
 
-//app.use('/images', express.static(path.join(__dirname, 'images')));  //any req targeting /images will be forwarded to backend/images and allowed to continue
+app.use('/images', express.static(path.join(__dirname, 'images')));  //any req targeting /images will be forwarded to backend/images and allowed to continue
 
 if (process.env.NODE_ENV === 'production') {
     app.use('/images', express.static(path.join(__dirname, 'images')));
-    app.use('/', express.static('client/build'));
+    app.use(express.static('client/build'));
 
     app.get('*' , (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
