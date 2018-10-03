@@ -24,9 +24,6 @@ mongoose.connect(keys.mongoURI, { useNewUrlParser: true }).then(() => {
     console.log('Connected to MongoDB!')
 }).catch(err => console.log(err));
 
-app.get('/', (req, res) => {
-    res.send('hello!!');
-});
 
 //use routes
 app.use('/api/users', users);
