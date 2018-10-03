@@ -29,14 +29,8 @@ mongoose.connect(keys.mongoURI, { useNewUrlParser: true }).then(() => {
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, Origin, X-Requested-With, Authorization');  //Authorization is where we put token in header on front end, we had to add Authorization here
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-    next();
-});
 
-//app.use('/images', express.static(path.join(__dirname, 'images')));  //any req targeting /images will be forwarded to backend/images and allowed to continue
+app.use('/images', express.static(path.join(__dirname, 'images')));  //any req targeting /images will be forwarded to backend/images and allowed to continue
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
