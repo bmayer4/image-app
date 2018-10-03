@@ -1,4 +1,4 @@
-import { ADD_POST, POST_LOADING, GET_POSTS, GET_POST, DELETE_POST, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, GET_MORE_USER_POSTS } from '../actions/types';
+import { ADD_POST, POST_LOADING, GET_POSTS, GET_POST, DELETE_POST, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, GET_MORE_USER_POSTS, ADD_LIKE_TO_POST } from '../actions/types';
 
 const initialState = {
     posts: [],
@@ -27,6 +27,18 @@ const postReducer = (state = initialState, action) => {
         return {
             ...state,
             posts: [...state.posts, ...action.payload.posts]
+        }
+        case ADD_LIKE_TO_POST:
+            let post = state.posts.find(p => p._id === action.payload.postId);
+            const updatedLikes = post.likes.filter(l => l.user !== action.payload.userId);
+            if (post.likes.length !== updatedLikes.length) {    //was liked, so unlike
+                post.likes = updatedLikes;
+            } else {
+                post.likes.push({ _id: 1, user: action.payload.userId});
+            }
+        return {
+            ...state,
+            posts: [...state.posts, ...post]
         }
         case RESET_POSTS:
         return {

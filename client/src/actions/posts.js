@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, GET_MORE_USER_POSTS } from './types';
+import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, GET_MORE_USER_POSTS, ADD_LIKE_TO_POST } from './types';
 
 /* thunks */
 export const startAddPost = (postData, history) => dispatch => {
@@ -70,9 +70,9 @@ export const startUpdatePost = (id, postData, history) => dispatch => {
     })   
 }
 
-export const startToggleLikePost = (id) => dispatch => {
+export const startToggleLikePost = (id, userId) => dispatch => {
     axios.post(`/api/posts/like/${id}`).then(res => {
-        dispatch(startGetPosts());  
+        dispatch(addLikeToPost({ postId: id, userId: userId }));  
         console.log('liked');
     }).catch(err => {
        dispatch(getErrors(err.response.data)); 
@@ -135,6 +135,11 @@ export const getUserPosts = (posts) => ({
 export const getMoreUserPosts = (posts) => ({
     type: GET_MORE_USER_POSTS,
     payload: posts
+})
+
+export const addLikeToPost = (likeData) => ({
+    type: ADD_LIKE_TO_POST,
+    payload: likeData
 })
 
 export const setPostLoading = () => ({

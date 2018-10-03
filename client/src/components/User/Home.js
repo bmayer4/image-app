@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { startGetUserPosts, resetPosts } from '../../actions/posts';
+import { startGetUserPosts, resetPosts, startToggleLikePost } from '../../actions/posts';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
 import Spinner from '../Spinner/Spinner';
@@ -30,6 +30,11 @@ class Home extends Component {
     this.props.startGetUserPosts(userId, post.posts.length, filters.limit, true);
   }
 
+  onToggleLike = (id) => {
+    const userId = this.props.auth.user.id;
+    this.props.startToggleLikePost(id, userId);
+  }
+
   render() {
     let pageContent;
     const { auth, post, filters } = this.props;
@@ -37,7 +42,7 @@ class Home extends Component {
     if (post.loading) {
       pageContent = <Spinner />
     } else if (post.posts && post.posts.length) {
-      pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} />)
+      pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} toggleLike={this.onToggleLike} />)
     } else if (post.posts && post.posts.length === 0) {
       pageContent = <div>You have no posts...</div>
     }
@@ -67,6 +72,7 @@ class Home extends Component {
 Home.propTypes = {
   startGetUserPosts: PropTypes.func.isRequired,
   resetPosts: PropTypes.func.isRequired,
+  startToggleLikePost: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   post: PropTypes.object.isRequired,
@@ -86,6 +92,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   startGetUserPosts: (userId, skip, limit, loadMore) => dispatch(startGetUserPosts(userId, skip, limit, loadMore)),
+  startToggleLikePost: (id, userId) => dispatch(startToggleLikePost(id, userId)),
   resetPosts: () => dispatch(resetPosts())
 });
 

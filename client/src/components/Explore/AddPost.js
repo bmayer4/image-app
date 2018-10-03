@@ -102,7 +102,7 @@ class AddPost extends Component {
                 </div>
                 <div className='form-group'>
                 <button type='button' className='btn btn-secondary' onClick={this.showFileUpload}>Add Image</button>
-                <input ref={this.myRef} className='myFile form-control-file' onChange={this.onImageUpload} type="file"/>
+                <input ref={this.myRef} type="file" className='myFile form-control-file' onChange={this.onImageUpload} />
                 </div>
                 {
                     this.state.imagePreview ? (

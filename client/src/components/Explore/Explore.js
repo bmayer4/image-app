@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { startGetPosts, startToggleLikePost, resetPosts } from '../../actions/posts';
+import { startGetPosts, startToggleLikePost, resetPosts, addLikeToPost } from '../../actions/posts';
 import { clearFilters } from '../../actions/filters';
 import PostItem from './PostItem';
 import PostFilters from '../Filters/PostFilters';
@@ -22,7 +22,8 @@ componentWillUnmount() {
 }
 
 onToggleLike = (id) => {
-  this.props.startToggleLikePost(id);
+  const userId = this.props.auth.user.id;
+  this.props.startToggleLikePost(id, userId);
 }
 
 loadMore = () => {
@@ -63,6 +64,7 @@ Explore.propTypes = {
     post: PropTypes.object.isRequired,
     startGetPosts: PropTypes.func.isRequired,
     startToggleLikePost: PropTypes.func.isRequired,
+    addLikeToPost: PropTypes.func.isRequired,
     clearFilters: PropTypes.func.isRequired,
     resetPosts: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
@@ -77,7 +79,8 @@ Explore.propTypes = {
   
   const mapDispatchToProps = (dispatch) => ({
     startGetPosts: (cat, skip, limit, loadMore) => dispatch(startGetPosts(cat, skip, limit, loadMore)),
-    startToggleLikePost: (id) => dispatch(startToggleLikePost(id)),
+    startToggleLikePost: (id, userId) => dispatch(startToggleLikePost(id, userId)),
+    addLikeToPost: (id) => dispatch(addLikeToPost(id)),
     clearFilters: () => dispatch(clearFilters()),
     resetPosts: () => dispatch(resetPosts())
   })
@@ -86,5 +89,4 @@ Explore.propTypes = {
 
 
   //TODO**
-  //errors
   //fix likes reload

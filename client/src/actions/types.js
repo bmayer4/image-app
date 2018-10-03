@@ -15,5 +15,5 @@ export const RESET_POSTS = 'RESET_POSTS';
 export const CLEAR_USER = 'CLEAR_USER';
 export const GET_MORE_POSTS = 'GET_MORE_POSTS';
 export const GET_MORE_USER_POSTS = 'GET_MORE_USER_POSTS';
-
+export const ADD_LIKE_TO_POST = 'ADD_LIKE_TO_POST';
 

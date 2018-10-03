@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { startGetUserPosts, resetPosts } from '../../actions/posts';
+import { startGetUserPosts, resetPosts, startToggleLikePost } from '../../actions/posts';
 import { startGetUser, clearUser } from '../../actions/user';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
@@ -33,6 +33,11 @@ class UserPage extends Component {
     this.props.startGetUserPosts(userId, post.posts.length, filters.limit, true);
   }
 
+  onToggleLike = (id) => {
+    const userId = this.props.auth.user.id;
+    this.props.startToggleLikePost(id, userId);
+  }
+
   render() {
     let pageContent;
     const { auth, post, user, filters } = this.props;
@@ -40,7 +45,7 @@ class UserPage extends Component {
     if (post.loading) {
       pageContent = <Spinner />
     } else if (post.posts && post.posts.length) {
-      pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} />)
+      pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} toggleLike={this.onToggleLike} />)
     } else if (post.posts && post.posts.length === 0) {
       pageContent = <div>This user has no posts...</div>
     }
@@ -76,6 +81,7 @@ UserPage.propTypes = {
   startGetUserPosts: PropTypes.func.isRequired,
   clearUser: PropTypes.func.isRequired,
   resetPosts: PropTypes.func.isRequired,
+  startToggleLikePost: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   post: PropTypes.object.isRequired,
@@ -96,6 +102,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   startGetUserPosts: (userId, skip, limit, loadMore) => dispatch(startGetUserPosts(userId, skip, limit, loadMore)),
   startGetUser: (userId) => dispatch(startGetUser(userId)),
+  startToggleLikePost: (id, userId) => dispatch(startToggleLikePost(id, userId)),
   clearUser: () => dispatch(clearUser()),
   resetPosts: () => dispatch(resetPosts())
 });
