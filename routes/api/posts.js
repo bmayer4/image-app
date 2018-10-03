@@ -86,7 +86,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
     }
 
     const { description, category } = req.body;
-    const url = req.protocol + '://' + req.get('host');
+    const url = req.protocol + 's' + '://' + req.get('host');
 
     const newPost = new Post({
         description,
