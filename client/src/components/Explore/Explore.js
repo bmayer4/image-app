@@ -89,4 +89,3 @@ Explore.propTypes = {
 
 
   //TODO**
-  //fix likes reload
