@@ -6,6 +6,7 @@ const keys = require('./config/keys');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const path = require('path');
+var cloudinary = require('cloudinary');
 
 const users = require('./routes/api/users');
 const posts = require('./routes/api/posts');
@@ -24,14 +25,19 @@ mongoose.connect(keys.mongoURI, { useNewUrlParser: true }).then(() => {
     console.log('Connected to MongoDB!')
 }).catch(err => console.log(err));
 
+cloudinary.config({ 
+    cloud_name: keys.cloudName, 
+    api_key: keys.API_Key, 
+    api_secret: keys.API_Secret
+});
 
 //use routes
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use('/images', express.static(path.join(__dirname, 'images')));
 if (process.env.NODE_ENV === 'production') {
-    app.use('/images', express.static(path.join(__dirname, 'images')));
+    //app.use('/images', express.static(path.join(__dirname, 'images')));
     app.use('/', express.static('client/build'));
 
     app.get('*' , (req, res) => {

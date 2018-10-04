@@ -4,10 +4,12 @@ const passport = require('passport');
 const Post = require('../../models/Post');
 const validatePostInput = require('../../validation/post');
 const validateCommentInput = require('../../validation/comment');
+const keys = require('../../config/keys');
 const multer = require('multer');
 const storage = require('../../middleware/multer-middleware');
-
-
+var cloudinary = require('cloudinary');
+  
+  
 // @route   GET api/posts/?queryParams (optional)
 // @desc    Get all posts
 // @access  Public
@@ -69,9 +71,9 @@ router.get('/user/:userId', (req, res) => {
 // @route   POST api/posts/
 // @desc    Create posts
 // @access  Private
-router.post('/', passport.authenticate('jwt', { session: false }), multer({storage: storage}).single('image'), (req, res) => {
+router.post('/', passport.authenticate('jwt', { session: false }), multer({ storage }).single('image'), (req, res) => {
     const { errors, isValid} = validatePostInput(req.body);
-    console.log(req.file.filename);
+
     if (!isValid) { 
         return res.status(400).json(errors) 
     }
@@ -82,16 +84,32 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({stora
     }
 
     const { description, category } = req.body;
-    const url = req.protocol + '://' + req.get('host');
 
-    const newPost = new Post({
-        description,
-        category: category.toLowerCase(),
-        user: req.user.id,
-        imagePath: url + '/images/' + req.file.filename
+    cloudinary.config({ 
+        cloud_name: keys.cloudName, 
+        api_key: keys.API_Key, 
+        api_secret: keys.API_Secret
     });
 
-    newPost.save().then(post => res.json(post)).catch(e => res.status(403).json(e));
+    cloudinary.v2.uploader.upload(req.file.path,
+        {
+          public_id: req.file.originalname,
+          height: 800,
+          crop: "scale",
+          quality: "auto"
+        }, function (error, result) {
+            if (error) {
+                return res.status(400).json(error);
+            }
+        console.log(result);
+ 
+        const newPost = new Post({
+            description,
+            category: category.toLowerCase(),
+            user: req.user.id,
+            imagePath: result.url
+        }).save().then(post => res.json(post)).catch(err => res.status((400).json(err)));
+        }).catch(err => res.status(400).json(err));
 });
 
 

@@ -48,6 +48,7 @@ class AddPost extends Component {
 
     onImageUpload = (e) => {
         const file = e.target.files[0];
+
         this.setState({
             image: file
         });
