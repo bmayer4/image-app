@@ -50,7 +50,7 @@ componentDidUpdate(prevProps) {
     }
 
     let postsLength = posts && posts.length;
-    let button = (postsLength && postsLength !== count && (postsLength && postsLength % filters.limit === 0) ?
+    let button = (postsLength && postsLength !== count) && (postsLength && postsLength % filters.limit === 0) ?
                  <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
     return (
