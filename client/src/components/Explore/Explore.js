@@ -31,6 +31,12 @@ loadMore = () => {
   this.props.startGetPosts(filters.category, post.posts.length, filters.limit, true);
 }
 
+componentDidUpdate(prevProps) {
+  if (this.props.post.posts === null) {
+    this.props.history.push('/notfound');
+  }
+}
+
   render() {
     let { auth, filters } = this.props;
     let { posts, loading } = this.props.post;
@@ -89,3 +95,5 @@ Explore.propTypes = {
 
 
   //TODO**
+  //resize landing image
+  //fix usercount for userpage posts

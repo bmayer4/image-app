@@ -16,18 +16,6 @@ class Login extends Component {
       this.props.clearErrors();
     }
 
-    componentWillReceiveProps(nextProps) {
-      if (nextProps.auth.isAuthenticated) {
-        this.props.history.push('/explore');
-      }
-
-    //   if (nextProps.errors) {
-    //     this.setState({
-    //       errors: nextProps.errors
-    //     })
-    //   }
-    }
-
     onChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value

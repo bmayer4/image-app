@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { startGetUserPosts, resetPosts, startToggleLikePost } from '../../actions/posts';
 import { startGetUser, clearUser } from '../../actions/user';
+import { clearErrors } from '../../actions/posts';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
 import Spinner from '../Spinner/Spinner';
@@ -19,12 +20,13 @@ class UserPage extends Component {
   componentWillUnmount() {
     this.props.clearUser(); 
     this.props.resetPosts();
+    this.props.clearErrors();
   }
 
-  componentWillReceiveProps(nextProps) {   //method being removed by react?
-    if (!nextProps.post.posts && !nextProps.post.loading) {
+  componentDidUpdate(prevProps) {
+      if (this.props.errors.usererror || this.props.post.posts === null) {
         this.props.history.push('/notfound');
-    }
+       } 
   }
 
   loadMore = () => {
@@ -81,6 +83,7 @@ UserPage.propTypes = {
   startGetUserPosts: PropTypes.func.isRequired,
   clearUser: PropTypes.func.isRequired,
   resetPosts: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   startToggleLikePost: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
@@ -104,6 +107,7 @@ const mapDispatchToProps = (dispatch) => ({
   startGetUser: (userId) => dispatch(startGetUser(userId)),
   startToggleLikePost: (id, userId) => dispatch(startToggleLikePost(id, userId)),
   clearUser: () => dispatch(clearUser()),
+  clearErrors: () => dispatch(clearErrors()),
   resetPosts: () => dispatch(resetPosts())
 });
 

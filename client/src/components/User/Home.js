@@ -18,9 +18,9 @@ class Home extends Component {
     this.props.resetPosts();
   }
 
-  componentWillReceiveProps(nextProps) {   //method being removed by react?
-    if (!nextProps.post.posts && !nextProps.post.loading) {
-        this.props.history.push('/notfound');
+  componentDidUpdate(prevProps) {
+    if (this.props.post.posts === null) {
+      this.props.history.push('/notfound');
     }
   }
 

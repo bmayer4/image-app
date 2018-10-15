@@ -139,7 +139,7 @@ class EditPost extends Component {
 
                 <div className='form-group'>
                 <button type='button' className='btn btn-secondary' onClick={this.showFileUpload}>Add Image</button>
-                <input ref={this.myRef} className='myFIle form-control-file' onChange={this.onImageUpload} type="file"/>
+                <input ref={this.myRef} className='myFile form-control-file' onChange={this.onImageUpload} type="file"/>
                 </div>
                 {
                     this.state.imagePreview ? (
@@ -177,7 +177,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  startGetPost: (id) => dispatch( startGetPost(id)),
+  startGetPost: (id) => dispatch(startGetPost(id)),
   getPost: (post) => dispatch(getPost(post)),
   startUpdatePost: (id, postData, history) => dispatch(startUpdatePost(id, postData, history)),
   clearErrors: () => dispatch(clearErrors())

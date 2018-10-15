@@ -38,9 +38,9 @@ class PostPage extends Component {
     })
 }
 
-  componentWillReceiveProps(nextProps) {   //method being removed by react?
-    if (!nextProps.post.post && !nextProps.post.loading) {
-        this.props.history.push('/notfound');
+  componentDidUpdate(prevProps) {
+    if (this.props.post.post === null) {
+      this.props.history.push('/notfound');
     }
   }
 
@@ -90,7 +90,7 @@ class PostPage extends Component {
       postContent = (
       <div className='container'>
       <div className='row'>
-
+      
       <div className='col-md-2 '>
       <h2 className='py-1 mt-3'>{post.description}</h2>
       <div className='py-1'>By {post.user.firstName} {post.user.lastName}</div>
