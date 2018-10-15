@@ -39,7 +39,7 @@ componentDidUpdate(prevProps) {
 
   render() {
     let { auth, filters } = this.props;
-    let { posts, loading } = this.props.post;
+    let { posts, loading, count } = this.props.post;
     let postContent;
     if (loading) {
         postContent = <Spinner />
@@ -49,8 +49,8 @@ componentDidUpdate(prevProps) {
         postContent = <h4 className='mt-5 ml-3'>No posts yet</h4>
     }
 
-    let postsLength = this.props.post.posts.length;
-    let button = (postsLength && postsLength !== this.props.post.count) && (postsLength && postsLength % filters.limit === 0) ?
+    let postsLength = posts && posts.length;
+    let button = (postsLength && postsLength !== count && (postsLength && postsLength % filters.limit === 0) ?
                  <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
     return (

@@ -21,7 +21,7 @@ export const startGetPosts = (category = '', skip = 0, limit = 3, loadMore = fal
          dispatch(getPosts(res.data));
         }
     }).catch(err => {
-        dispatch(getPosts({ posts: null, count: null }));   //not empty posts, an actual server error sets posts to null and component redirects off null check
+        dispatch(getPosts({ posts: [], count: null }));   //not empty posts, an actual server error sets posts to null and component redirects off null check
     })
 }
 
@@ -43,7 +43,7 @@ export const startGetUserPosts = (userId, skip = 0, limit = 6, loadMore = false)
             dispatch(getUserPosts(res.data));  
         }
     }).catch(err => {
-        dispatch(getUserPosts({ posts: null, count: null }));
+        dispatch(getUserPosts({ posts: null, count: null }));  
     })
 }
 
