@@ -108,7 +108,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({ stor
             category: category.toLowerCase(),
             user: req.user.id,
             imagePath: result.url
-        }).save().then(post => res.json(post)).catch(err => res.status((400).json(err)));
+        }).save().then(post => res.json(post)).catch(err => res.status(400).json(err));
         }).catch(err => res.status(400).json(err));
 });
 
@@ -125,7 +125,7 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
     }).catch(err => res.status(404).json({ deletepost: 'Unable to delete post' }));
 });
 
-// @route   PATCH api/posts/:id
+// @route   PATCH api/posts/:id   (put for updating entire entity, patch for partial update)
 // @desc    Update post by id
 // @access  Private
 router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({storage: storage}).single('image'), (req, res) => {
@@ -143,7 +143,7 @@ router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({s
 
     const { description, category } = req.body;
     let imagePath = req.body.imagePath;  
-    if (req.file) {
+    if (req.file) {   //should go to cloudinary instead...
         const url = req.protocol + '://' + req.get('host');
         imagePath = url + '/images/' + req.file.filename;
     }
