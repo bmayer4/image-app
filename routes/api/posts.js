@@ -96,14 +96,9 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({ dest
             description,
             category: category.toLowerCase(),
             user: req.user.id,
-<<<<<<< HEAD
-            imagePath: result.url
-        }).save().then(post => res.json(post)).catch(err => res.status(400).json(err));
-=======
             imagePath: result.url,
             publicId: result.public_id
         }).save().then(post => res.json(post)).catch(err => res.status((400).json(err)));
->>>>>>> improvements
         }).catch(err => res.status(400).json(err));
 });
 
@@ -128,7 +123,7 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
     }).catch(err => res.status(400).json());
 });
 
-// @route   PATCH api/posts/:id   (put for updating entire entity, patch for partial update)
+// @route   PATCH api/posts/:id
 // @desc    Update post by id
 // @access  Private
 router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({ dest: 'uploads/' }).single('image'), (req, res) => {
@@ -138,19 +133,10 @@ router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({ 
     let imagePath = req.body.imagePath;
     let publicId;
 
-<<<<<<< HEAD
-    const { description, category } = req.body;
-    let imagePath = req.body.imagePath;  
-    if (req.file) {   //should go to cloudinary instead...
-        const url = req.protocol + '://' + req.get('host');
-        imagePath = url + '/images/' + req.file.filename;
-    }
-=======
         Post.findOne({ user: req.user.id, _id: req.params.id}).then(post => {
             if (!post) {
                 return res.status(404).json();
             }
->>>>>>> improvements
 
             if (req.file) {
             cloudinary.v2.uploader.destroy(post.publicId, function(error ,result) {
