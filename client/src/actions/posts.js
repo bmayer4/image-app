@@ -4,7 +4,8 @@ import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, P
 /* thunks */
 export const startAddPost = (postData, history) => dispatch => {
     dispatch(clearErrors());
-    axios.post('/api/posts', postData).then(res => {
+    dispatch(setPostLoading());
+    axios.post('/api/posts', postData).then(res => {  // SPINNER!
         //dispatch(addPost(res.data));  //post we add from create isn't populating user info
         history.push('/explore');
     }).catch(err => {
@@ -34,7 +35,7 @@ export const startGetPost = (id) => dispatch => {
     })
 }
 
-export const startGetUserPosts = (userId, skip = 0, limit = 6, loadMore = false) => dispatch => {
+export const startGetUserPosts = (userId, skip = 0, limit = 3, loadMore = false) => dispatch => {
     if (skip === 0) { dispatch(setPostLoading()); }
     axios.get(`/api/posts/user/${userId}?skip=${skip}&limit=${limit}`).then(res => {
         if (loadMore) {
@@ -59,6 +60,7 @@ export const startDeletePost = (id, history) => dispatch => {
 
 export const startUpdatePost = (id, postData, history) => dispatch => {
     dispatch(clearErrors());
+    dispatch(setPostLoading());
     axios.patch(`/api/posts/${id}`, postData).then(res => {
         history.push(`/posts/${id}`);    
     }).catch(err => {

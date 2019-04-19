@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { startGetPost, getPost, startUpdatePost } from '../../actions/posts';
 import { clearErrors } from '../../actions/auth';
+import categories from '../../utilities/categories';
+import Spinner from '../Spinner/Spinner';
 
 
 class EditPost extends Component {
@@ -15,7 +17,7 @@ class EditPost extends Component {
   componentDidMount() {
       const id = this.props.match.params.id;
       const post = this.props.post.post._id === id ? this.props.post.post : null;
-      //finding posts even tho they were cleared when explore unmounted..
+      // finding posts even tho they were cleared when explore unmounted..
       if (post) {
         this.props.getPost(post);
       } else {
@@ -23,11 +25,12 @@ class EditPost extends Component {
       }
     }
 
-    state = {  //if post found already below runs and componentDidUpdate is not ran (if block fails), otherwise state is set by componentDidUpdate
+    state = {  // if post found already below runs and componentDidUpdate is not ran (if block fails), otherwise state is set by componentDidUpdate
         description: this.props.post.post && this.props.post.post.description,
         category: this.props.post.post && this.props.post.post.category,
         imagePreview: this.props.post.post && this.props.post.post.imagePath,
-        image: this.props.post.post && this.props.post.post.imagePath
+        image: null,
+        imagePath: this.props.post.post && this.props.post.post.imagePath
     }
 
     componentWillUnmount() {
@@ -43,7 +46,7 @@ class EditPost extends Component {
             description, 
             category, 
             imagePreview: imagePath, 
-            image: imagePath
+            imagePath
           });
         }
       } 
@@ -67,9 +70,9 @@ class EditPost extends Component {
           postData = {
             category: this.state.category,
             description: this.state.description,
-            imagePath: this.state.image
+            imagePath: this.state.imagePath
         }
-        }
+    }
 
         const { history } = this.props;
         const id = this.props.match.params.id;
@@ -80,7 +83,7 @@ class EditPost extends Component {
     this.myRef.current.click();
   }
 
-    onImageUpload = (e) => {
+  onImageUpload = (e) => {
       const file = e.target.files[0];
       this.setState({
           image: file
@@ -88,57 +91,61 @@ class EditPost extends Component {
   
       const reader = new FileReader();  
      
-      reader.onload = () => {           //called when its done loading the file
+      // called when its done loading the file
+      reader.onload = () => {           
         this.setState({
-          imagePreview: reader.result
-      });
+          imagePreview: reader.result,
+          imagePath: reader.result
+        });
       };
   
       if (file) {
         reader.readAsDataURL(file); 
       } else {
         this.setState({
-          imagePreview: ''
+          image: null,
+          imagePreview: '',
+          imagePath: ''
       });
       }    
   }
 
   render() {
 
-    const { errors, post } = this.props;
-    const { description, image, imagePreview } = this.state;
+    const { description, imagePath, imagePreview } = this.state;
     const category = this.state.category && this.state.category.slice(0, 1).toUpperCase() + this.state.category.slice(1);
-    const shouldDisable = !category || !description || !image;
+    const shouldDisable = !category || !description || !imagePath;
 
-    const selectOptions = post.categories.map(c => (
+    const selectOptions = categories.map(c => (
         <option key={c} value={c}>
             {c}
         </option>
     ));
 
+    if (this.props.post.loading) {
+      return <Spinner />
+    } 
+
     return (
      <div className="py-5 myForm">
         <div className="container">
           <div className="row">
-            <div className="col-md-8 mx-auto">
-              <h1 className="display-4 text-center">Edit Post</h1>
-              <p className="lead text-muted text-center">Share your imagery</p>
+            <div className="col-sm-8 col-md-6 mx-auto">
+              <div className="display-4 text-center my-4">Edit Post</div>
               <form noValidate onSubmit={this.onSubmit}>
                 <div className="form-group">
                 <label htmlFor="description">Description</label>
-                <input type="text" id="description" className={`form-control ${errors.description && 'is-invalid'}`} autoFocus value={description || ''} name="description" onChange={this.onChange}/>
-                { errors.description && <div className="invalid-feedback">{errors.description}</div> }
+                <input type="text" id="description" className='form-control' autoFocus value={description || ''} name="description" onChange={this.onChange}/>
                 </div>
                 <div className="form-group">
                 <label>Category</label>
-                <select className={`form-control ${errors.category && 'is-invalid'}`} name='category' value={category} onChange={this.onChange}>
+                <select className='form-control' name='category' value={category} onChange={this.onChange}>
                     {selectOptions}
                 </select>
-                { errors.category && <div className="invalid-feedback">{errors.category}</div> }
                 </div>
 
                 <div className='form-group'>
-                <button type='button' className='btn btn-secondary' onClick={this.showFileUpload}>Add Image</button>
+                <button type='button' className='btn btn-secondary' onClick={this.showFileUpload}>Change Image</button>
                 <input ref={this.myRef} className='myFile form-control-file' onChange={this.onImageUpload} type="file"/>
                 </div>
                 {

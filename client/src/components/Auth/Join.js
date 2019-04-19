@@ -3,75 +3,53 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { registerUser } from '../../actions/auth';
 import { clearErrors } from '../../actions/auth';
-
+import { reduxForm, Field } from 'redux-form';
+import { JOINFIELDS } from '../Forms/AuthFields';
+import { JoinField } from '../Forms/AuthField';
+import { joinValidate } from '../Forms/validate';
 
 class Join extends Component {
-
-    state = {
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
-    }
 
     componentWillUnmount() {
       this.props.clearErrors();
     }
 
-    onChange = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        })
-    }
-
-    onSubmit = (e) => {
-        e.preventDefault();
-        const user = {
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            email: this.state.email,
-            password: this.state.password
+  renderFields = () => 
+        <div>
+        {
+            JOINFIELDS.map(({name, label, type}) => {
+                return <Field
+                key={name}
+                type={type}
+                label={label}
+                name={name}
+                component={JoinField}
+                />
+            })
         }
-        this.props.registerUser(user, this.props.history);
-    }
+        </div>
+
+onSubmit = (values) => {  // will only submit if valid validation
+  this.props.registerUser(values, this.props.history);
+};
 
   render() {
 
-    const { email, password, firstName, lastName } = this.state;
-    const { errors } = this.props;
-    const shouldDisable = !email || !password || !firstName || !lastName;
-
+    const { handleSubmit } = this.props
 
     return (
-     <div className="py-5 myForm">
+     <div className="py-5">
         <div className="container">
           <div className="row">
-            <div className="col-md-8 m-auto">
+            <div className="col-sm-8 col-md-6 m-auto">
               <h1 className="display-4 text-center">Join</h1>
               <p className="lead text-muted text-center">Share photos and interact with users</p>
-              <form noValidate onSubmit={this.onSubmit}>
-              <div className="form-group">
-              <label htmlFor="firstName">First Name</label>
-              <input type="text" id="firstName" className={`form-control ${errors.firstName && 'is-invalid'}`} autoFocus value={this.state.firstName} name="firstName" onChange={this.onChange}/>
-              { errors.firstName && <div className="invalid-feedback">{errors.firstName}</div> }
-              </div>
-              <div className="form-group">
-              <label htmlFor="lastName">Last Name</label>
-              <input type="text" id="lastName" className={`form-control ${errors.lastName && 'is-invalid'}`} value={this.state.lastName} name="lastName" onChange={this.onChange}/>
-              { errors.lastName && <div className="invalid-feedback">{errors.lastName}</div> }
-              </div>              
-                <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input type="text" id="email" className={`form-control ${errors.email && 'is-invalid'}`} value={this.state.email} name="email" onChange={this.onChange}/>
-                { errors.email && <div className="invalid-feedback">{errors.email}</div> }
-                </div>
-                <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input type="password" id="password" className={`form-control ${errors.password && 'is-invalid'}`} value={this.state.password} name="password" onChange={this.onChange}/>
-                { errors.password && <div className="invalid-feedback">{errors.password}</div> }
-                </div>
-                <input disabled={shouldDisable} type="submit" className="btn btn-info mt-4" />
+
+              <form noValidate onSubmit={handleSubmit(this.onSubmit)}>
+              {this.renderFields()}
+              <input type="submit" className="btn btn-info mt-4" />
               </form>
+
             </div>
           </div>
         </div>
@@ -79,6 +57,7 @@ class Join extends Component {
       </div>
     )
   }
+
 }
 
 Join.propTypes = {
@@ -98,5 +77,11 @@ const mapDispatchToProps = (dispatch) => ({
     clearErrors: () => dispatch(clearErrors())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Join);
+Join = connect(mapStateToProps, mapDispatchToProps)(Join);
+
+export default reduxForm({
+  validate: joinValidate,
+  form: 'joinForm',
+})(Join);
+
 

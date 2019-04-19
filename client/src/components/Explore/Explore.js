@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
 import { startGetPosts, startToggleLikePost, resetPosts, addLikeToPost } from '../../actions/posts';
 import { clearFilters } from '../../actions/filters';
 import PostItem from './PostItem';
@@ -12,13 +11,11 @@ import Spinner from '../Spinner/Spinner';;
 class Explore extends Component {
 
 componentDidMount() {
-    const { filters } = this.props;
-    this.props.startGetPosts(filters.category, 0, filters.limit, false); 
+    this.props.startGetPosts(); 
 }
 
 componentWillUnmount() {
   this.props.resetPosts();
-  this.props.clearFilters();
 }
 
 onToggleLike = (id) => {
@@ -38,8 +35,8 @@ componentDidUpdate(prevProps) {
 }
 
   render() {
-    let { auth, filters } = this.props;
-    let { posts, loading, count } = this.props.post;
+    let { auth, filters, post: { posts, loading, count } } = this.props;
+    //let { posts, loading, count } = post;
     let postContent;
     if (loading) {
         postContent = <Spinner />
@@ -56,6 +53,7 @@ componentDidUpdate(prevProps) {
     return (
             <div className='container mt-3'>
             <PostFilters getPosts={this.props.startGetPosts} />
+            <div className="my-3">Images: { this.props.post.count }</div>
             <div className='row'>
             { postContent }
             </div>
