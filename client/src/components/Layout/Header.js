@@ -4,9 +4,16 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router'
 import { logoutUser } from '../../actions/auth';
+import { startGetPosts } from '../../actions/posts';
 
 
-const Header = ({ auth, logoutUser, history }) => {
+const Header = ({ startGetPosts, auth, logoutUser, history }) => {
+
+    
+    const loadExplore = () => {
+        startGetPosts();
+        history.push('/explore');
+    }
 
     const onLogout = (e) => {
         e.preventDefault();
@@ -17,10 +24,10 @@ const Header = ({ auth, logoutUser, history }) => {
     const authLinks = (
         <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-            <Link to='/explore' className="nav-link">Explore</Link>
+            <a className="nav-link" onClick={loadExplore}>Explore</a>
         </li>
         <li className="nav-item">
-            <Link to='/home' className="nav-link">Home</Link>
+            <Link to='/profile' className="nav-link">Profile</Link>
         </li>
         <li className="nav-item">
             <Link to='/post/add' className="nav-link">Add Post</Link>
@@ -40,7 +47,7 @@ const Header = ({ auth, logoutUser, history }) => {
             <Link to='/login' className="nav-link">Log In</Link>
         </li>
         <li className="nav-item">
-            <Link to='/join' className="nav-link">Join Free</Link>
+            <Link to='/join' className="nav-link">Join</Link>
         </li>
     </ul>
     )
@@ -68,7 +75,8 @@ const Header = ({ auth, logoutUser, history }) => {
 
 Header.propTypes = {
     logoutUser: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    startGetPosts: PropTypes.func.isRequired
   }
   
   const mapStateToProps = (state) => {
@@ -79,6 +87,7 @@ Header.propTypes = {
   
   const mapDispatchToProps = (dispatch) => ({
     logoutUser: () => dispatch( logoutUser()),
+    startGetPosts: (cat, skip, limit, loadMore) => dispatch(startGetPosts(cat, skip, limit, loadMore)),
   });
 
   export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));

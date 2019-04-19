@@ -109,9 +109,14 @@ a { color: inherit; }
 }
 
 /* Comment card*/
-.myCard {
-  padding: .8rem;
+.commentCard {
+  padding: .5rem;
 }
+
+.commentText {
+  font-size: .9rem;
+}
+
 
 /* Comment form */
 .myCommentButton {

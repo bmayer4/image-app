@@ -20,6 +20,9 @@ const PostSchema = new Schema({
         type: String,
         required: true
     },
+    publicId: {
+        type: String
+    },
     likes: [
       {
         user: {

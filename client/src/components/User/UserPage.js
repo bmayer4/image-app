@@ -53,7 +53,7 @@ class UserPage extends Component {
     }
 
     let postsLength = post.posts && post.posts.length;
-    let button = (postsLength && postsLength !== post.userPostCount) && (postsLength && postsLength % filters.limit === 0) ?
+    let button = (postsLength && postsLength !== post.count) && (postsLength && postsLength % filters.limit === 0) ?
                  <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
     return (
@@ -63,7 +63,7 @@ class UserPage extends Component {
       <div className='py-3 text-center'>
       <h2> { user.user.firstName } { user.user.lastName}</h2>
       <div>Member since: { <Moment format="MM/DD/YYYY">{user.user.date}</Moment> }</div>
-      <div>Images: { post.userPostCount }</div>
+      <div>Images: { post.count }</div>
       </div>
       :
       null

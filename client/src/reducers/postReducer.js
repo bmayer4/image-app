@@ -4,8 +4,6 @@ const initialState = {
     posts: [],
     post:  {},
     count: null,
-    userPostCount: null,
-    categories: ['', 'Sports', 'Outdoors', 'Cooking', 'Fashion', 'Holidays', 'Travel', 'Entertainment', 'Friends', 'Selfie', 'Love', 'Animals', 'Business', 'Home'],
     loading: false 
 }
 
@@ -43,7 +41,8 @@ const postReducer = (state = initialState, action) => {
         case RESET_POSTS:
         return {
             ...state,
-            posts: []
+            posts: [],
+            count: null
         }
         case GET_POST: 
             return {
@@ -55,7 +54,7 @@ const postReducer = (state = initialState, action) => {
         return {
             ...state,
             posts: action.payload.posts,
-            userPostCount: action.payload.count,
+            count: action.payload.count,
             loading: false
         }
         case GET_MORE_USER_POSTS: 

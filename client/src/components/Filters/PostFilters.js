@@ -8,12 +8,8 @@ import categories from '../../utilities/categories';
 class PostFilters extends Component {
 
   onCategoryChange = (e) => {
-    if (e.target.value === 'All') {
-      e.target.value = '';
-    }
-    const { filters } = this.props;
     this.props.sortByCategory(e.target.value);
-    this.props.getPosts(e.target.value, 0, filters.limit);
+    this.props.getPosts(e.target.value, 0, this.props.limit);
   }
 
   render() {

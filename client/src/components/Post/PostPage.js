@@ -79,33 +79,37 @@ class PostPage extends Component {
 
   render() {
 
-    const { post } = this.props.post;   //if we had to load post from db
+    const { post, loading } = this.props.post;   //if we had to load post from db
     const { auth } = this.props;
     let postContent;
     let getComments;
-    if (this.props.post.loading) {
+    if (loading) {
       postContent = <Spinner />
     } else if (post && Object.keys(post).length > 0) {
+
       getComments = post.comments.map((c, i) => <CommentItem key={i} comment={c} auth={auth} postId={post._id} deleteComment={this.onDeleteComment}></CommentItem>);
+      
       postContent = (
       <div className='container'>
       <div className='row'>
       
-      <div className='col-md-2 '>
+      <div className='col-sm-4'>
       <h2 className='py-1 mt-3'>{post.description}</h2>
-      <div className='py-1'>By {post.user.firstName} {post.user.lastName}</div>
-      <div className='py-1'>Date: {<Moment format="MM/DD/YYYY">{post.date}</Moment>}</div>
-      <div className='py-1'>{post.likes.length} Likes</div>
+      <hr />
+      <div className='py-1'>Photo By: <span className="text-muted">{post.user.firstName} {post.user.lastName}</span></div>
+      <div className='py-1'>Date: <span className="text-muted">{<Moment format="MM/DD/YYYY">{post.date}</Moment>}</span></div>
+      <div className='py-1'>Category: <span className="text-muted">{post.category}</span></div>
+      <div className='py-1 text-info'>{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}</div>
       {
         auth.isAuthenticated && auth.user.id === post.user._id?
-      <div>
-      <Link to={`/post/edit/${post._id}`}><button className='btn btn-info btn-sm mt-3 my-2'>Edit Post</button></Link>
-      <button className='btn btn-secondary btn-sm' onClick={this.handleModalOpen}>Delete Post</button>
+      <div className="my-2">
+      <Link to={`/post/edit/${post._id}`}><button className='btn btn-info btn-sm m-1'>Edit Post</button></Link>
+      <button className='btn btn-secondary btn-sm m-1' onClick={this.handleModalOpen}>Delete Post</button>
       </div>  : null
       }
       </div>
 
-      <div className='col-md-8 mx-auto'>
+      <div className='col-sm-8 col-lg-6 mx-auto'>
       <img className='myImage img-fluid rounded' src={post.imagePath} alt=''></img>
       { auth.isAuthenticated ? <CommentForm onCommentChange={this.onChange} onSubmit={this.onSubmit} text={this.state.text} /> : <div className='mt-5 mb-3 text-muted'>Please <Link to={'/login'} className='text-info'>Log in</Link> to comment</div>}
       { post.comments.length ? getComments : <div className='mt-4'>No Comments yet...</div> }
@@ -121,7 +125,6 @@ class PostPage extends Component {
     return (
       <div className='py-5' id="myModal">
       { postContent }
-
       <RemovePostModal modalOpen={this.state.modalOpen} closeModal={this.handleModalClose} removePost={this.onRemovePost}/>
       </div>
     )

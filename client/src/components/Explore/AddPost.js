@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { startAddPost } from '../../actions/posts';
 import { clearErrors } from '../../actions/auth';
+import categories from '../../utilities/categories';
+import Spinner from '../Spinner/Spinner';
 
 
 class AddPost extends Component {
@@ -13,6 +15,7 @@ class AddPost extends Component {
       }
 
     state = {
+        descriptionError: '',
         description: '',
         category: '',
         imagePreview: '',
@@ -37,9 +40,7 @@ class AddPost extends Component {
         postData.append('description', this.state.description);
         postData.append('image', this.state.image);
 
-        const { history } = this.props;
-
-        this.props.startAddPost(postData, history);
+        this.props.startAddPost(postData, this.props.history);
     }
 
     showFileUpload = () => {
@@ -71,35 +72,40 @@ class AddPost extends Component {
     }  
 
   render() {
-  
-    const { errors, post } = this.props;
-    const { category, description, image, imagePreview } = this.state;
+    
+    const { loading } = this.props.post;
+    const { category, description, descriptionError, image, imagePreview } = this.state;
     const shouldDisable = !category || !description || !image;
 
-    let selectOptions = post.categories.map(c => (
+    let selectOptions = categories.map(c => (
         <option key={c} value={c}>
             {c}
         </option>
     ));
+
+    if (loading) {
+      return <Spinner />
+    } 
+
     return (
-     <div className="py-5 myForm">
+     <div className="py-5">
         <div className="container">
           <div className="row">
-            <div className="col-md-8 mx-auto">
-              <h1 className="display-4 text-center">Add Post</h1>
+            <div className="col-sm-8 col-md-6 mx-auto">
+              <div className="display-4 text-center">Add Post</div>
               <p className="lead text-muted text-center">Share your imagery</p>
+              
               <form noValidate onSubmit={this.onSubmit}>
                 <div className="form-group">
                 <label htmlFor="description">Description</label>
-                <input type="text" id="description" className={`form-control ${errors.description && 'is-invalid'}`} autoFocus value={description} name="description" onChange={this.onChange}/>
-                { errors.description && <div className="invalid-feedback">{errors.description}</div> }
+                <input type="text" id="description" className={`form-control ${descriptionError && 'is-invalid'}`} autoFocus value={description} name="description" onChange={this.onChange}/>
+                { descriptionError && <div className="invalid-feedback">{descriptionError}</div> }
                 </div>
                 <div className="form-group">
                 <label>Category</label>
-                <select className={`form-control ${errors.category && 'is-invalid'}`} name='category' value={category} onChange={this.onChange}>
+                <select className='form-control' name='category' value={category} onChange={this.onChange}>
                     {selectOptions}
                 </select>
-                { errors.category && <div className="invalid-feedback">{errors.category}</div> }
                 </div>
                 <div className='form-group'>
                 <button type='button' className='btn btn-secondary' onClick={this.showFileUpload}>Add Image</button>
@@ -114,6 +120,7 @@ class AddPost extends Component {
                 }
                 <input disabled={shouldDisable} type="submit" className="btn btn-info mt-4" />
               </form>
+              
             </div>
           </div>
         </div>
@@ -143,4 +150,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddPost);
+
+
 
