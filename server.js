@@ -11,15 +11,15 @@ var cloudinary = require('cloudinary');
 const users = require('./routes/api/users');
 const posts = require('./routes/api/posts');
 
-//Body parser middleware
+// Body parser middleware
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-//Passport middleware/config
+// Passport middleware/config
 app.use(passport.initialize());
 require('./config/passport')(passport);
 
-//Connect to mongodb
+// Connect to mongodb
 mongoose.Promise = global.Promise;
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true }).then(() => {
     console.log('Connected to MongoDB!')
@@ -31,7 +31,7 @@ cloudinary.config({
     api_secret: keys.API_Secret
 });
 
-//use routes
+// use routes
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 

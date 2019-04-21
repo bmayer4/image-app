@@ -5,7 +5,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Open Sans', sans-serif;
-  overflow-y: overlay
 }
 
 /* Nav */
@@ -22,7 +21,7 @@ body {
 }
 
 .navbar-custom .navbar-nav .nav-link:hover {
-  color: rgba(0, 0, 0, .85);
+  color: rgba(0, 0, 0, .90);
 }
 
 .navbar-custom button.navbar-toggler:focus { 
@@ -34,7 +33,16 @@ body {
   font-size: 1.6rem;
 }
 
-/* omage card */
+.is-active {
+  color: #17A2B8 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, .25);
+}
+
+.brand-logo:hover {
+  color: #17A2B8
+}
+
+/* Image card */
 .item-user small:hover {
   color: #17A2B8;
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router'
@@ -11,8 +11,7 @@ const Header = ({ startGetPosts, auth, logoutUser, history }) => {
 
     
     const loadExplore = () => {
-        startGetPosts();
-        history.push('/explore');
+        startGetPosts();  // if category selected, explore nav link will refresh posts
     }
 
     const onLogout = (e) => {
@@ -24,13 +23,13 @@ const Header = ({ startGetPosts, auth, logoutUser, history }) => {
     const authLinks = (
         <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-            <a className="nav-link" onClick={loadExplore}>Explore</a>
+            <NavLink activeClassName='is-active' className="nav-link" onClick={loadExplore} to="/explore">Explore</NavLink>
         </li>
         <li className="nav-item">
-            <Link to='/profile' className="nav-link">Profile</Link>
+            <NavLink activeClassName='is-active' to='/post/add' className="nav-link">Add Post</NavLink>
         </li>
         <li className="nav-item">
-            <Link to='/post/add' className="nav-link">Add Post</Link>
+            <NavLink activeClassName='is-active' to='/profile' className="nav-link">Profile</NavLink>
         </li>
         <li className="nav-item">
             <a href='' className="nav-link" onClick={onLogout}>Logout</a>
@@ -41,13 +40,13 @@ const Header = ({ startGetPosts, auth, logoutUser, history }) => {
     const notAuthLinks = (
         <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-            <Link to='/explore' className="nav-link">Explore</Link>
+            <NavLink activeClassName='is-active' to='/explore' className="nav-link" onClick={loadExplore}>Explore</NavLink>
         </li>
         <li className="nav-item">
-            <Link to='/join' className="nav-link">Join</Link>
+            <NavLink activeClassName='is-active' to='/join' className="nav-link">Join</NavLink>
         </li>
         <li className="nav-item">
-            <Link to='/login' className="nav-link">Login</Link>
+        <NavLink activeClassName='is-active' to='/login' className="nav-link">Login</NavLink>
         </li>
     </ul>
     )
