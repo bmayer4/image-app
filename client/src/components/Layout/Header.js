@@ -18,7 +18,7 @@ const Header = ({ startGetPosts, auth, logoutUser, history }) => {
     const onLogout = (e) => {
         e.preventDefault();
         logoutUser(); 
-        history.push('/explore');
+        history.push('/');
     }
 
     const authLinks = (
@@ -44,10 +44,10 @@ const Header = ({ startGetPosts, auth, logoutUser, history }) => {
             <Link to='/explore' className="nav-link">Explore</Link>
         </li>
         <li className="nav-item">
-            <Link to='/login' className="nav-link">Log In</Link>
+            <Link to='/join' className="nav-link">Join</Link>
         </li>
         <li className="nav-item">
-            <Link to='/join' className="nav-link">Join</Link>
+            <Link to='/login' className="nav-link">Login</Link>
         </li>
     </ul>
     )

@@ -14,7 +14,7 @@ const postItem = ({ post, toggleLike, auth }) => {
   return (
     <div className="col-sm-6 col-md-4 col-xl-3 pt-4">
     <div className='card py-1'>
-    <Link to={`/user/${post.user._id}`}><div className='item-user pl-2 pb-1'><small>{ post.user.firstName } { post.user.lastName.slice(0, 1) + '.' }</small></div></Link>
+    <Link to={`/user/${post.user._id}`}><div className='item-user pl-2 pb-1 text-muted'><small>{ post.user.firstName } { post.user.lastName }</small></div></Link>
     <div className='img-container'>
     <Link to={`/posts/${post._id}`}><img className='card-img-top img-fluid mb-1' src={post.imagePath} alt='' /></Link>
       <div className='d-flex justify-content-between'>

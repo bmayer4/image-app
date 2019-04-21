@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
     let limit = +req.query.limit;
     let category = req.query.category; 
     let postQuery = category ? Post.find({ category: category.toLowerCase() }) : Post.find();
-    if (skip !== null && limit !== null) {  //0 limit is equivalent to no limit per mongo docs
+    if (skip !== null && limit !== null) {  // 0 limit is equivalent to no limit per mongo docs
         postQuery.skip(skip).limit(limit);
     }
     postQuery.sort({ date: -1 }).populate('user',  ['firstName', 'lastName']).then(posts => {
@@ -69,7 +69,7 @@ router.get('/user/:userId', (req, res) => {
                 posts: fetchedPosts,
                 count
             })
-        }).catch(err => res.status(404).json());
+        }).catch(err => res.status(400).json());
 });
 
 // @route   POST api/posts/
@@ -94,11 +94,11 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({ dest
  
         const newPost = new Post({
             description,
-            category: category.toLowerCase(),
+            category: category && category.toLowerCase(),
             user: req.user.id,
             imagePath: result.url,
             publicId: result.public_id
-        }).save().then(post => res.json(post)).catch(err => res.status((400).json(err)));
+        }).save().then(post => res.json(post)).catch(err => res.status(400).json(err));
         }).catch(err => res.status(400).json(err));
 });
 
@@ -107,6 +107,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), multer({ dest
 // @desc    Delete post by id
 // @access  Private
 router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+
     Post.findOneAndRemove({ user: req.user.id, _id: req.params.id}).then(post => {
         if (!post) {
             return res.status(404).json();
@@ -129,7 +130,7 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
 router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({ dest: 'uploads/' }).single('image'), (req, res) => {
 
     const { description } = req.body;
-    const category = req.body.category.toLowerCase();
+    const category = req.body.category && req.body.category.toLowerCase();
     let imagePath = req.body.imagePath;
     let publicId;
 
@@ -158,12 +159,12 @@ router.patch('/:id', passport.authenticate('jwt', { session: false }), multer({ 
                     imagePath = result.url;
                     publicId =  result.public_id;
 
-                    post.update({ description, category, imagePath, publicId }).then((post) => {
+                    post.update({ description, category, imagePath, publicId }, { runValidators: true }).then((post) => {
                         return res.json(post);
                     }).catch(err => res.status(400).json(err));
                 });
             } else {
-                post.update({ description, category, imagePath }).then((post) => {
+                post.update({ description, category, imagePath }, { runValidators: true }).then((post) => {
                     return res.json(post);
                 }).catch(err => res.status(400).json(err));
             }
@@ -199,7 +200,6 @@ router.post('/like/:id', passport.authenticate('jwt', { session: false }), (req,
 // @desc    Add comment to post
 // @access  Private
 router.post('/comment/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-
     Post.findById(req.params.id).populate('user').then(post => {
         if (!post) {
             return res.status(404).json();
@@ -221,7 +221,7 @@ router.post('/comment/:id', passport.authenticate('jwt', { session: false }), (r
 // @desc    Delete comment from post
 // @access  Private
 router.delete('/comment/:id/:comment_id', passport.authenticate('jwt', { session: false }), (req, res) => {
-
+    
     Post.findById(req.params.id).populate('user').then(post => {
         if (!post) {
             return res.status(404).json();

@@ -7,13 +7,14 @@ import { clearErrors } from '../../actions/posts';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
 import Spinner from '../Spinner/Spinner';
+import alertify from 'alertifyjs';
+
 
 class UserPage extends Component {
 
   componentDidMount() {
     const userId = this.props.match.params.id;
-    const { filters } = this.props;
-    this.props.startGetUserPosts(userId, 0, filters.limit, false);
+    this.props.startGetUserPosts(userId, 0, this.props.filters.limit, false);
     this.props.startGetUser(userId);
   }
 
@@ -24,9 +25,10 @@ class UserPage extends Component {
   }
 
   componentDidUpdate(prevProps) {
-      if (this.props.errors.usererror || this.props.post.posts === null) {
-        this.props.history.push('/notfound');
-       } 
+    if (this.props.errors.getUserPostsError) {
+      alertify.error('Error retrieving user page');
+      this.props.history.push('/notfound');
+    }
   }
 
   loadMore = () => {
@@ -41,18 +43,18 @@ class UserPage extends Component {
   }
 
   render() {
-    let pageContent;
     const { auth, post, user, filters } = this.props;
+    let pageContent;
+    let postsLength = post.posts && post.posts.length;
 
     if (post.loading) {
       pageContent = <Spinner />
-    } else if (post.posts && post.posts.length) {
+    } else if (postsLength) {
       pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} toggleLike={this.onToggleLike} />)
-    } else if (post.posts && post.posts.length === 0) {
+    } else if (!postsLength) {
       pageContent = <div>This user has no posts...</div>
     }
 
-    let postsLength = post.posts && post.posts.length;
     let button = (postsLength && postsLength !== post.count) && (postsLength && postsLength % filters.limit === 0) ?
                  <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
@@ -61,9 +63,9 @@ class UserPage extends Component {
       {
         user.user && Object.keys(user.user).length ?
       <div className='py-3 text-center'>
-      <h2> { user.user.firstName } { user.user.lastName}</h2>
+      <h3> { user.user.firstName } { user.user.lastName}</h3>
       <div>Member since: { <Moment format="MM/DD/YYYY">{user.user.date}</Moment> }</div>
-      <div>Images: { post.count }</div>
+      <div>Total images: { post.count }</div>
       </div>
       :
       null

@@ -1,16 +1,16 @@
 import axios from 'axios';
 import { ADD_POST, GET_ERRORS, CLEAR_ERRORS, GET_POSTS, GET_POST, DELETE_POST, POST_LOADING, GET_USER_POSTS, RESET_POSTS, GET_MORE_POSTS, GET_MORE_USER_POSTS, ADD_LIKE_TO_POST } from './types';
+import alertify from 'alertifyjs';
 
 /* thunks */
 export const startAddPost = (postData, history) => dispatch => {
     dispatch(clearErrors());
     dispatch(setPostLoading());
-    axios.post('/api/posts', postData).then(res => {  // SPINNER!
-        //dispatch(addPost(res.data));  //post we add from create isn't populating user info
+    axios.post('/api/posts', postData).then(res => { 
         history.push('/explore');
     }).catch(err => {
-        dispatch(getErrors(err.response.data)); 
-    })
+        dispatch(getErrors({ addPostError: 'Server error' })); 
+    });
 }
 
 export const startGetPosts = (category = '', skip = 0, limit = 3, loadMore = false) => dispatch => {
@@ -22,8 +22,8 @@ export const startGetPosts = (category = '', skip = 0, limit = 3, loadMore = fal
          dispatch(getPosts(res.data));
         }
     }).catch(err => {
-        dispatch(getPosts({ posts: null, count: null }));   //not empty posts, an actual server error sets posts to null and component redirects off null check
-    })
+        dispatch(getErrors({ getPostsError: 'Server error' }));   
+    });
 }
 
 export const startGetPost = (id) => dispatch => {
@@ -31,8 +31,8 @@ export const startGetPost = (id) => dispatch => {
     axios.get(`/api/posts/${id}`).then(res => {
         dispatch(getPost(res.data));
     }).catch(err => {
-        dispatch(getPost(null)); 
-    })
+        dispatch(getErrors({ getPostError: 'Server error' }));    
+    });
 }
 
 export const startGetUserPosts = (userId, skip = 0, limit = 3, loadMore = false) => dispatch => {
@@ -44,8 +44,8 @@ export const startGetUserPosts = (userId, skip = 0, limit = 3, loadMore = false)
             dispatch(getUserPosts(res.data));  
         }
     }).catch(err => {
-        dispatch(getUserPosts({ posts: null, count: null }));  
-    })
+        dispatch(getErrors({ getUserPostsError: 'Server error' }));
+    });
 }
 
 export const startDeletePost = (id, history) => dispatch => {
@@ -54,44 +54,42 @@ export const startDeletePost = (id, history) => dispatch => {
         dispatch(deletePost(id));
         history.push('/explore');
     }).catch(err => {
-        dispatch(getErrors(err.response.data)); 
-    })   
+        dispatch(getErrors({ deleteError: 'Server error' }));  
+    });   
 }
 
 export const startUpdatePost = (id, postData, history) => dispatch => {
-    dispatch(clearErrors());
     dispatch(setPostLoading());
     axios.patch(`/api/posts/${id}`, postData).then(res => {
         history.push(`/posts/${id}`);    
     }).catch(err => {
-        dispatch(getErrors(err.response.data)); 
-    })   
+        dispatch(getErrors({ editPostError: 'Server error' }));
+    });   
 }
 
 export const startToggleLikePost = (id, userId) => dispatch => {
     axios.post(`/api/posts/like/${id}`).then(res => {
         dispatch(addLikeToPost({ postId: id, userId: userId }));  
-        console.log('liked');
     }).catch(err => {
-       dispatch(getErrors(err.response.data)); 
-    })
+        alertify.error('Server error');
+    });
 }
 
 export const startAddComment = (postId, commentData) => dispatch => {
     dispatch(clearErrors());
     axios.post(`/api/posts/comment/${postId}`, commentData).then(res => {
-        dispatch(getPost(res.data));   //? 
+        dispatch(getPost(res.data)); 
     }).catch(err => {
-        dispatch(getErrors(err.response.data)); 
-    })
+        dispatch(getErrors({ addCommentError: 'Server error' })); 
+    });
 }
 
 export const startDeleteComment = (postId, commentId) => dispatch => {
     axios.delete(`/api/posts/comment/${postId}/${commentId}`).then(res => {
-        dispatch(getPost(res.data));   //?
+        dispatch(getPost(res.data)); 
     }).catch(err => {
-        dispatch(getErrors(err.response.data)); 
-    })
+        dispatch(getErrors({ deleteCommentError: 'Server error' }));
+    });
 }
 
 

@@ -10,9 +10,9 @@ import { joinValidate } from '../Forms/validate';
 
 class Join extends Component {
 
-    componentWillUnmount() {
-      this.props.clearErrors();
-    }
+  componentWillUnmount() {
+    this.props.clearErrors();
+  }
 
   renderFields = () => 
         <div>
@@ -23,19 +23,25 @@ class Join extends Component {
                 type={type}
                 label={label}
                 name={name}
+                err={this.props.errors.emailExists}
                 component={JoinField}
                 />
             })
         }
         </div>
 
+  displayError = () => {
+    const { errors: { registerError } } = this.props;
+    if (registerError) {
+      return <div className="text-center registerError">{ registerError }</div>
+    }
+  }
+
 onSubmit = (values) => {  // will only submit if valid validation
-  this.props.registerUser(values, this.props.history);
+  this.props.registerUser(values);
 };
 
   render() {
-
-    const { handleSubmit } = this.props
 
     return (
      <div className="py-5">
@@ -44,9 +50,10 @@ onSubmit = (values) => {  // will only submit if valid validation
             <div className="col-sm-8 col-md-6 m-auto">
               <h1 className="display-4 text-center">Join</h1>
               <p className="lead text-muted text-center">Share photos and interact with users</p>
+              { this.displayError() }
 
-              <form noValidate onSubmit={handleSubmit(this.onSubmit)}>
-              {this.renderFields()}
+              <form noValidate onSubmit={this.props.handleSubmit(this.onSubmit)}>
+              { this.renderFields() }
               <input type="submit" className="btn btn-info mt-4" />
               </form>
 

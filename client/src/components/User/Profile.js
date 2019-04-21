@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { startGetUserPosts, resetPosts, startToggleLikePost } from '../../actions/posts';
+import { startGetUserPosts, resetPosts, startToggleLikePost, clearErrors } from '../../actions/posts';
 import PostItem from '../Explore/PostItem';
 import Moment from 'react-moment';
 import Spinner from '../Spinner/Spinner';
+import alertify from 'alertifyjs';
+
 
 class Profile extends Component {
 
@@ -16,10 +18,12 @@ class Profile extends Component {
 
   componentWillUnmount() {
     this.props.resetPosts();
+    this.props.clearErrors();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.post.posts === null) {
+    if (this.props.errors.getUserPostsError) {
+      alertify.error('Error retrieving profile');
       this.props.history.push('/notfound');
     }
   }
@@ -37,24 +41,23 @@ class Profile extends Component {
 
   render() {
     let pageContent;
-    const { auth, post, filters } = this.props;
+    const { auth, post, filters } = this.props;;
 
     if (post.loading) {
       pageContent = <Spinner />
-    } else if (post.posts && post.posts.length) {
+    } else if (post.posts.length) {
       pageContent = post.posts.map((p, i) => <PostItem key={i} post={p} auth={auth} toggleLike={this.onToggleLike} />)
-    } else if (post.posts && post.posts.length === 0) {
+    } else if (!post.posts.length) {
       pageContent = <div>You have no posts...</div>
     }
 
-    let postsLength = post.posts && post.posts.length;
-    let button = (postsLength && postsLength !== post.count) && (postsLength && postsLength % filters.limit === 0) ?
+    let button = (post.posts.length !== post.count) && (post.posts.length % filters.limit === 0) ?
                  <button className='btn btn-info mt-3' onClick={this.loadMore}>Load More</button> : null
 
     return (
       <div className='container mt-3'>
       <div className='py-3 text-center'>
-      <h2> { auth.user.firstName } { auth.user.lastName}</h2>
+      <h3> { auth.user.firstName } { auth.user.lastName}</h3>
       <div>Member since: { <Moment format="MM/DD/YYYY">{auth.user.date}</Moment> }</div>
       <div>Images: { post.count }</div>
       </div>
@@ -73,6 +76,7 @@ Profile.propTypes = {
   startGetUserPosts: PropTypes.func.isRequired,
   resetPosts: PropTypes.func.isRequired,
   startToggleLikePost: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   post: PropTypes.object.isRequired,
@@ -93,7 +97,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   startGetUserPosts: (userId, skip, limit, loadMore) => dispatch(startGetUserPosts(userId, skip, limit, loadMore)),
   startToggleLikePost: (id, userId) => dispatch(startToggleLikePost(id, userId)),
-  resetPosts: () => dispatch(resetPosts())
+  resetPosts: () => dispatch(resetPosts()),
+  clearErrors: () => dispatch(clearErrors())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

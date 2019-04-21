@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { startGetPosts, startToggleLikePost, resetPosts, addLikeToPost } from '../../actions/posts';
+import { startGetPosts, startToggleLikePost, resetPosts, addLikeToPost, clearErrors } from '../../actions/posts';
 import { clearFilters } from '../../actions/filters';
 import PostItem from './PostItem';
 import PostFilters from '../Filters/PostFilters';
-import Spinner from '../Spinner/Spinner';;
+import Spinner from '../Spinner/Spinner';
+import alertify from 'alertifyjs';
 
 
 class Explore extends Component {
@@ -14,8 +15,16 @@ componentDidMount() {
     this.props.startGetPosts(); 
 }
 
+componentDidUpdate(prevProps) {
+  if (this.props.errors.getPostsError) {
+    alertify.error('Error retrieving posts');
+    this.props.history.push('/notfound');
+  }
+}
+
 componentWillUnmount() {
   this.props.resetPosts();
+  this.props.clearErrors();
 }
 
 onToggleLike = (id) => {
@@ -26,12 +35,6 @@ onToggleLike = (id) => {
 loadMore = () => {
   const { filters, post } = this.props;
   this.props.startGetPosts(filters.category, post.posts.length, filters.limit, true);
-}
-
-componentDidUpdate(prevProps) {
-  if (this.props.post.posts === null) {
-    this.props.history.push('/notfound');
-  }
 }
 
   render() {
@@ -53,7 +56,7 @@ componentDidUpdate(prevProps) {
     return (
             <div className='container mt-3'>
             <PostFilters getPosts={this.props.startGetPosts} />
-            <div className="my-3">Images: { this.props.post.count }</div>
+            <div className="my-3">Total images: { this.props.post.count }</div>
             <div className='row'>
             { postContent }
             </div>
@@ -71,13 +74,16 @@ Explore.propTypes = {
     addLikeToPost: PropTypes.func.isRequired,
     clearFilters: PropTypes.func.isRequired,
     resetPosts: PropTypes.func.isRequired,
+    clearErrors: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired,
     filters: PropTypes.object.isRequired
   }
   
   const mapStateToProps = (state) => ({
     post: state.post,
     auth: state.auth,
+    errors: state.errors,
     filters: state.filters
   })
   
@@ -86,12 +92,8 @@ Explore.propTypes = {
     startToggleLikePost: (id, userId) => dispatch(startToggleLikePost(id, userId)),
     addLikeToPost: (id) => dispatch(addLikeToPost(id)),
     clearFilters: () => dispatch(clearFilters()),
-    resetPosts: () => dispatch(resetPosts())
+    resetPosts: () => dispatch(resetPosts()),
+    clearErrors: () => dispatch(clearErrors())
   })
   
   export default connect(mapStateToProps, mapDispatchToProps)(Explore);
-
-
-  //TODO**
-  //resize landing image
-  //fix usercount for userpage posts

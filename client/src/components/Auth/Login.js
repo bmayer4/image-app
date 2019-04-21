@@ -31,6 +31,13 @@ class Login extends Component {
     }
     </div>
 
+    displayError = () => {
+      const { errors: { loginError } } = this.props;
+      if (loginError) {
+        return <div className="text-center loginError">{ loginError }</div>
+      }
+    }
+
 onSubmit = (values) => {  
   this.props.loginUser(values);
 };
@@ -46,9 +53,10 @@ return (
         <div className="col-sm-8 col-md-6 m-auto m-auto">
           <h1 className="display-4 text-center">Login</h1>
           <p className="lead text-muted text-center">Share photos and interact with users</p>
+          { this.displayError() }
 
           <form noValidate onSubmit={handleSubmit(this.onSubmit)}>
-          {this.renderFields()}
+          { this.renderFields() }
           <input type="submit" className="btn btn-info mt-4" />
           </form>
 

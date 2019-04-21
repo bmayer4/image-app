@@ -5,6 +5,7 @@ import { startGetPost, getPost, startUpdatePost } from '../../actions/posts';
 import { clearErrors } from '../../actions/auth';
 import categories from '../../utilities/categories';
 import Spinner from '../Spinner/Spinner';
+import alertify from 'alertifyjs';
 
 
 class EditPost extends Component {
@@ -17,7 +18,7 @@ class EditPost extends Component {
   componentDidMount() {
       const id = this.props.match.params.id;
       const post = this.props.post.post._id === id ? this.props.post.post : null;
-      // finding posts even tho they were cleared when explore unmounted..
+
       if (post) {
         this.props.getPost(post);
       } else {
@@ -25,21 +26,35 @@ class EditPost extends Component {
       }
     }
 
-    state = {  // if post found already below runs and componentDidUpdate is not ran (if block fails), otherwise state is set by componentDidUpdate
-        description: this.props.post.post && this.props.post.post.description,
-        category: this.props.post.post && this.props.post.post.category,
-        imagePreview: this.props.post.post && this.props.post.post.imagePath,
+    state = { 
+        description: this.props.post.post.description || '',
+        descriptionError: '',
+        category: this.props.post.post.category || '',
+        imagePreview: this.props.post.post.imagePath || '',
         image: null,
-        imagePath: this.props.post.post && this.props.post.post.imagePath
+        imagePath: this.props.post.post.imagePath || '',
+        imageChanged: false
     }
 
     componentWillUnmount() {
       this.props.clearErrors();
     }
 
-    componentDidUpdate(prevProps) {  //wouldn't do anything if post was the same before and going to this page
-      if (prevProps.post.post !== this.props.post.post) {
-        const post = (this.props.post.post);
+    componentDidUpdate(prevProps) {
+      if (this.props.errors.editPostError) {
+        alertify.error('Error editing post');
+        this.props.history.push('/notfound');
+      } else if (this.props.errors.getPostError) {
+        alertify.error('Error retrieving post');
+        this.props.history.push('/notfound');
+      }
+
+      // not called if post was found initially, like when we click edit from post page
+      if (prevProps.post.post !== this.props.post.post) { 
+        const { history, post: { post }, auth: { user } } = this.props;
+        if (post.user._id !== user.id) {
+          history.push('/notfound');
+        }
         if (post) {
           const { description, category, imagePath } = post;
           this.setState({
@@ -55,13 +70,21 @@ class EditPost extends Component {
     onChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
-        })
+        });
     }
 
     onSubmit = (e) => {
         e.preventDefault();
+
+        if (this.state.description.length > 80) {
+          this.setState({ descriptionError: "Description must be less than 80 characters" });
+          return;
+        }
+
+        this.setState({ descriptionError: '' });
+
         let postData;
-        if (typeof(this.state.image) === 'object') {
+        if (this.state.imageChanged) {
           postData = new FormData(); 
           postData.append('category', this.state.category);
           postData.append('description', this.state.description);
@@ -86,7 +109,8 @@ class EditPost extends Component {
   onImageUpload = (e) => {
       const file = e.target.files[0];
       this.setState({
-          image: file
+          image: file,
+          imageChanged: true
       });
   
       const reader = new FileReader();  
@@ -112,7 +136,7 @@ class EditPost extends Component {
 
   render() {
 
-    const { description, imagePath, imagePreview } = this.state;
+    const { description, imagePath, imagePreview, descriptionError } = this.state;
     const category = this.state.category && this.state.category.slice(0, 1).toUpperCase() + this.state.category.slice(1);
     const shouldDisable = !category || !description || !imagePath;
 
@@ -135,7 +159,8 @@ class EditPost extends Component {
               <form noValidate onSubmit={this.onSubmit}>
                 <div className="form-group">
                 <label htmlFor="description">Description</label>
-                <input type="text" id="description" className='form-control' autoFocus value={description || ''} name="description" onChange={this.onChange}/>
+                <input type="text" id="description" className={`form-control ${descriptionError && 'is-invalid'}`} autoFocus value={description} name="description" onChange={this.onChange}/>
+                { descriptionError && <div className="invalid-feedback">{descriptionError}</div> }
                 </div>
                 <div className="form-group">
                 <label>Category</label>
@@ -149,7 +174,7 @@ class EditPost extends Component {
                 <input ref={this.myRef} className='myFile form-control-file' onChange={this.onImageUpload} type="file"/>
                 </div>
                 {
-                    this.state.imagePreview ? (
+                    imagePreview ? (
                         <div className='imagePreview'>
                         <img className='img-fluid' src={imagePreview} alt='' />
                     </div>

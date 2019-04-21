@@ -15,17 +15,17 @@ const postReducer = (state = initialState, action) => {
                 posts: [action.payload, ...state.posts]
             }
         case GET_POSTS:
-        return {
-            ...state,
-            posts: action.payload.posts,
-            count: action.payload.count,
-            loading: false
-        }
+            return {
+                ...state,
+                posts: action.payload.posts,
+                count: action.payload.count,
+                loading: false
+            }
         case GET_MORE_POSTS:
-        return {
-            ...state,
-            posts: [...state.posts, ...action.payload.posts]
-        }
+            return {
+                ...state,
+                posts: [...state.posts, ...action.payload.posts]
+            }
         case ADD_LIKE_TO_POST:
             let post = state.posts.find(p => p._id === action.payload.postId);
             const updatedLikes = post.likes.filter(l => l.user !== action.payload.userId);
@@ -34,16 +34,17 @@ const postReducer = (state = initialState, action) => {
             } else {
                 post.likes.push({ _id: 1, user: action.payload.userId});
             }
-        return {
-            ...state,
-            posts: [...state.posts, ...post]
-        }
+            return {
+                ...state,
+                posts: [...state.posts, ...post]
+            }
         case RESET_POSTS:
-        return {
-            ...state,
-            posts: [],
-            count: null
-        }
+            return {
+                ...state,
+                posts: [],
+                count: null,
+                loading: false
+            }
         case GET_POST: 
             return {
                 ...state,
@@ -51,17 +52,17 @@ const postReducer = (state = initialState, action) => {
                 loading: false
             }
         case GET_USER_POSTS: 
-        return {
-            ...state,
-            posts: action.payload.posts,
-            count: action.payload.count,
-            loading: false
-        }
+            return {
+                ...state,
+                posts: action.payload.posts,
+                count: action.payload.count,
+                loading: false
+            }
         case GET_MORE_USER_POSTS: 
-        return {
-            ...state,
-            posts: [...state.posts, ...action.payload.posts]
-        }
+            return {
+                ...state,
+                posts: [...state.posts, ...action.payload.posts]
+            }
         case DELETE_POST:
             return {
                 ...state,

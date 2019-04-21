@@ -1,3 +1,6 @@
+@import "../node_modules/alertifyjs/build/css/themes/bootstrap.min.css";
+@import "../node_modules/alertifyjs/build/css/alertify.min.css";
+
 body {
   margin: 0;
   padding: 0;
@@ -29,6 +32,11 @@ body {
 .brand-logo { 
   color: rgba(0, 0, 0, .7);
   font-size: 1.6rem;
+}
+
+/* omage card */
+.item-user small:hover {
+  color: #17A2B8;
 }
 
 /* Form Errors */
@@ -78,7 +86,7 @@ a { color: inherit; }
   left: 0;
   height: 100%;
   width: 100%;
-  background:rgba(0, 0, 0, .48);
+  background:rgba(0, 0, 0, .40);
 }
 
 .header-button {
@@ -142,6 +150,13 @@ a { color: inherit; }
 a:hover {
   color: rgba(0, 0, 0, .4);
   text-decoration: none;
+}
+
+/*Forms*/
+.registerError, .loginError {
+  font-size: .8rem;
+  margin-top: .25rem;
+  color: #dc3545;
 }
 
 /*Modal*/

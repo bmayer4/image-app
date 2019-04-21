@@ -64,10 +64,10 @@ router.get('/current', passport.authenticate('jwt', { session: false}), (req, re
 router.get('/:userId', (req, res) => {
     User.findById(req.params.userId, ['firstName', 'lastName', 'date']).then((user) => {
         if (!user) {
-            return res.status(400).json({ userError: 'Unable to retrieve user' })
+            return res.status(404).json()
         }
         res.json(user);
-    }).catch(err => res.status(404).json({ userError: 'Unable to retrieve user' }));;
+    }).catch(err => res.status(400).json());
 });
 
 

@@ -5,6 +5,7 @@ import { startAddPost } from '../../actions/posts';
 import { clearErrors } from '../../actions/auth';
 import categories from '../../utilities/categories';
 import Spinner from '../Spinner/Spinner';
+import alertify from 'alertifyjs';
 
 
 class AddPost extends Component {
@@ -22,6 +23,13 @@ class AddPost extends Component {
         image: null
     }
 
+    componentDidUpdate(prevProps) {
+      if (this.props.errors.addPostError) {
+        alertify.error('Error adding post');
+        this.props.history.push('/notfound');
+      }
+    }
+
     componentWillUnmount() {
       this.props.clearErrors();
     }
@@ -34,6 +42,13 @@ class AddPost extends Component {
 
     onSubmit = (e) => {
         e.preventDefault();
+    
+        if (this.state.description.length > 80) {
+          this.setState({ descriptionError: "Description must be less than 80 characters" });
+          return;
+        }
+
+        this.setState({ descriptionError: '' });
 
         const postData = new FormData(); 
         postData.append('category', this.state.category);
