@@ -35,9 +35,7 @@ cloudinary.config({
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 
-//app.use('/images', express.static(path.join(__dirname, 'images')));
 if (process.env.NODE_ENV === 'production') {
-    //app.use('/images', express.static(path.join(__dirname, 'images')));
     app.use('/', express.static('client/build'));
 
     app.get('*' , (req, res) => {
