@@ -18,6 +18,10 @@ export const joinValidate = (values) => {
     } else if (values.password != values.confirmPassword) {
         errors.confirmPassword = 'Passwords must match';
     }
+
+    if (!values.confirmPassword) {  //  so match error doesn't override required
+      errors.confirmPassword = 'Confirm Password required';
+    }
   
     if (!values.email) {
       errors.email = 'Email required';
